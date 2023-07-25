@@ -1,7 +1,7 @@
 import App from './App';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './error-page';
-import Contact from './routes/contact';
+import Jobs from './routes/jobs';
 
 export const router = createBrowserRouter([
   {
@@ -10,9 +10,9 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "contacts/:contactId",
-        element: <Contact />,
-      },
+        path:'jobs',
+        element: <Jobs />
+      }
     ],
   },
 ]);
