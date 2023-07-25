@@ -1,7 +1,7 @@
 import App from './App';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './error-page';
-import Jobs from './routes/jobs';
+import Jobs from './routes/jobs/jobs';
 
 export const router = createBrowserRouter([
   {
