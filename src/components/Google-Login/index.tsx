@@ -1,7 +1,10 @@
 import {googleLogout, useGoogleLogin } from '@react-oauth/google';
 import { useEffect, useState } from 'react';
 import { create } from 'apisauce'
-import { Avatar} from '@chakra-ui/react';
+import { Avatar, Button, Image, Text} from '@chakra-ui/react';
+import  ico from '../../assets/search.ico'
+
+
 
 function GoogleLoginWrapper() {
     const [ user, setUser ] = useState<any>();
@@ -42,9 +45,6 @@ function GoogleLoginWrapper() {
     
     return (
         <div>
-            <h2>React Google Login</h2>
-            <br />
-            <br />
             {profile ? (
                 <div>
                     <Avatar src={profile.picture} name="user" />
@@ -56,7 +56,10 @@ function GoogleLoginWrapper() {
                     <button onClick={logOut}>Log out</button>
                 </div>
             ) : (
-                <button onClick={() => login()}>Sign in with Google 🚀 </button>
+                <Button variant={'ghost'} onClick={() => login()}>
+                    <Image mr={2} borderRadius={'full'} boxSize='20px' src={ico} />
+                    <Text>Sign in with Google </Text>
+                </Button>
             )}
         </div>
     )
