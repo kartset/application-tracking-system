@@ -2,33 +2,23 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
-    Button,
+    Heading,
   } from '@chakra-ui/react'
 import GoogleLoginWrapper from '../Google-Login'
 
-const NavModal:React.FC<any> = ({isOpen, OnOpen, onClose}) => {
-
+const NavModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Modal Title</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <GoogleLoginWrapper />
-            </ModalBody>
-  
-            <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button variant='ghost'>Secondary Action</Button>
-            </ModalFooter>
-          </ModalContent>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalCloseButton />
+                <ModalBody>
+                    <Heading style={{textAlign:'center'}} mt={8} mb={8} as={'h2'} size={'md'}>{modalTitle}</Heading>
+                    <GoogleLoginWrapper />
+                </ModalBody>
+            </ModalContent>
         </Modal>
     )
 }

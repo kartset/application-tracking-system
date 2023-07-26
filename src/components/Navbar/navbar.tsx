@@ -6,6 +6,7 @@ import NavModal from '../Modal/modal';
 const Navbar = () => {
     const [scrolling, setScrolling] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [modalTitle, setModalTitle] = useState('')
 
     // Function to handle the scroll event
     const handleScroll = () => {
@@ -30,11 +31,11 @@ const Navbar = () => {
              <Box className={`navbar ${scrolling ? "scrolled" : ""}`}>
                 <Box className={`brand ${scrolling ? "text-scrolled" : ""}`}>AT-System</Box>
                 <Flex>
-                    <Button onClick={onOpen} size={'sm'} color='white' _hover={{bgColor:'#394867'}} bgColor='#394867' mr={2}>Signup</Button>
-                    <Button size={'sm'} color='white' _hover={{bgColor:'#394867'}} bgColor='#394867' >Login</Button>
+                    <Button onClick={() => {onOpen();setModalTitle('Log In')}} size={'sm'} color='white' _hover={{bgColor:'#394867'}} bgColor='#394867' mr={2} >Login</Button>
+                    <Button variant={'outline'} borderColor={'#394867'} onClick={() => {onOpen();setModalTitle('Sign In')}} size={'sm'} color={scrolling ? 'white' : '#394867'} _hover={{bgColor:scrolling ? '#394867' : '#edf3f8'}} bgColor={scrolling ? '#394867': '#edf3f8'} >Signin</Button>
                 </Flex>
             </Box>
-            <NavModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+            <NavModal modalTitle={modalTitle} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
         </chakra.nav>
     )
 }
