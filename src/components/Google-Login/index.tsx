@@ -1,66 +1,58 @@
-import {googleLogout, useGoogleLogin } from '@react-oauth/google';
-import { useEffect, useState } from 'react';
+import { useGoogleLogin } from '@react-oauth/google';
+import React, { useEffect } from 'react';
 import { create } from 'apisauce'
-import { Avatar, Button, Flex, Image, Text} from '@chakra-ui/react';
+import { Button, Flex, Image, Text} from '@chakra-ui/react';
 import  ico from '../../assets/search.ico'
+import { setProfile, setUser } from '../../redux/reducers/login/login';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux';
 
 
+interface GoogleLoginWrapperProps {
+    onClose: () => void
+}
 
-function GoogleLoginWrapper() {
-    const [ user, setUser ] = useState<any>();
-    const [ profile, setProfile ] = useState<any>();
 
+const GoogleLoginWrapper:React.FC<GoogleLoginWrapperProps> = ({onClose}) => {
+    let { user, profile } = useSelector((state:RootState) => state.login)
+    const dispatch = useDispatch()
     const login = useGoogleLogin({
-        onSuccess: (codeResponse) => setUser(codeResponse),
+        onSuccess: (codeResponse) => dispatch(setUser(codeResponse)),
         onError: (error) => console.log('Login Failed:', error)
     });
 
-    const logOut = () => {
-        googleLogout();
-        setProfile(null);
-    };
+    //this will go to backend
+    useEffect(() => {
+        if (Object.keys(user).length > 0 &&  user) {
+            
+            console.log({user})
+            
+            let api = create({
+                baseURL: 'https://www.googleapis.com/oauth2/v1/',
+                headers: {
+                    Authorization: `${user.token_type} ${user.access_token}`,
+                    Accept: 'application/json'
+                },
+            })
+            
+            api.get('userinfo?access_token=' + user.access_token)
+            .then((res:any) => {
+                dispatch(setProfile(res.data));
+                onClose()
 
-    useEffect(      //this will go to backend
-        () => {
-            if (user) {
-                console.log({user})
-                let api = create({
-                    baseURL: 'https://www.googleapis.com/oauth2/v1/',
-                    headers: {
-                        Authorization: `${user.token_type} ${user.access_token}`,
-                        Accept: 'application/json'
-                    },
-                })
-                api.get('userinfo?access_token=' + user.access_token)
-                    .then((res:any) => {
-                        setProfile(res.data);
-                    })
-                    .catch((err:any) => console.log(err));
-            }
-        },
-        [ user ]
-    );
+            })
+            .catch((err:any) => console.log(err));
+        }
+    }, [user]);
 
     console.log({user, profile})
     
     return (
         <Flex justifyContent={'center'}>
-            {profile ? (
-                <div>
-                    <Avatar src={profile.picture} name="user" />
-                    <h3>User Logged in</h3>
-                    <p>Name: {profile.name}</p>
-                    <p>Email Address: {profile.email}</p>
-                    <br />
-                    <br />
-                    <button onClick={logOut}>Log out</button>
-                </div>
-            ) : (
-                <Button size={'sm'} variant={'outline'} onClick={() => login()}>
-                    <Image mr={2} borderRadius={'full'} boxSize='20px' src={ico} />
-                    <Text fontWeight={'bold'} >Sign in with Google </Text>
-                </Button>
-            )}
+            <Button size={'sm'} variant={'outline'} onClick={() => login()}>
+                <Image mr={2} borderRadius={'full'} boxSize='20px' src={ico} />
+                <Text fontWeight={'bold'} >Sign in with Google </Text>
+            </Button>
         </Flex>
     )
 }

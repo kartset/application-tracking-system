@@ -17,7 +17,7 @@ const NavModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
                 <ModalCloseButton />
                 <ModalBody>
                     <Heading style={{textAlign:'center'}} mt={8} mb={8} as={'h2'} size={'md'}>{modalTitle}</Heading>
-                    <GoogleLoginWrapper />
+                    <GoogleLoginWrapper onClose={onClose} />
                     <Login modalTitle={modalTitle} />
                 </ModalBody>
             </ModalContent>
