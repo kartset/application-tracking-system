@@ -7,6 +7,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Provider } from 'react-redux'
+import { store } from './redux';
 
 
 const root = ReactDOM.createRoot(
@@ -16,7 +18,9 @@ root.render(
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID ? process.env.REACT_APP_GOOGLE_CLIENT_ID : ''}>
         <React.StrictMode>
             <ChakraProvider>
-                <RouterProvider router={router} />
+                <Provider store={store}>
+                    <RouterProvider router={router} />
+                </Provider>
             </ChakraProvider>
         </React.StrictMode>
     </GoogleOAuthProvider>
