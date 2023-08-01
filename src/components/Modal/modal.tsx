@@ -5,9 +5,11 @@ import {
     ModalBody,
     ModalCloseButton,
     Heading,
+    ModalHeader,
   } from '@chakra-ui/react'
 import GoogleLoginWrapper from '../Google-Login'
 import Login from '../Form/Login'
+import CandidateApplicationForm from '../Form/CandidateApplicationForm'
 
 const NavModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
     return (
@@ -23,6 +25,23 @@ const NavModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
             </ModalContent>
         </Modal>
     )
+}
+
+export const ApplyModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
+  return (
+        <Modal size={'lg'} isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader style={{textAlign:'center'}} mt={1} mb={1}>
+                    {modalTitle}
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <CandidateApplicationForm onClose={onClose} />
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+  )
 }
 
 export default NavModal

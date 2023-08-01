@@ -1,7 +1,9 @@
-import { Box, Button, Flex, Link, chakra } from "@chakra-ui/react";
+import { Box, Button, Flex, Link, chakra, useDisclosure } from "@chakra-ui/react";
+import { ApplyModal } from "./Modal/modal";
 
 
 const Card = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     return (
         <Flex bg="#edf3f8" _dark={{bg: "#3e3e3e",}} p={50} pt={0} w="full" 
             alignItems="center" justifyContent="center"
@@ -42,9 +44,10 @@ const Card = () => {
                 </Box>
 
                 <Flex justifyContent="end" alignItems="center" mt={4}>
-                    <Button size={'sm'} colorScheme="blue" >Apply</Button>
+                    <Button onClick={() => {onOpen()}} size={'sm'} colorScheme="blue" >Apply</Button>
                 </Flex>
             </Box>
+            <ApplyModal modalTitle={'Apply'} isOpen={isOpen} onClose={onClose} />
         </Flex>
     )
 }
