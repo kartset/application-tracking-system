@@ -168,6 +168,18 @@ const ApplicantDetailsForm = () => {
                         <Input type='email' placeholder='Enter Email' rounded={'lg'} size={'sm'} />
                     </FormControl>
                 </GridItem>
+                <GridItem mb={2} colSpan={1} id="aadhaar">
+                    <FormControl isRequired>
+                        <FormLabel>Aadhaar Number</FormLabel>
+                        <Input type='number' placeholder='Enter Aadhaar Number' rounded={'lg'} size={'sm'} />
+                    </FormControl>
+                </GridItem>
+                <GridItem mb={2} colSpan={1} id="pan">
+                    <FormControl isRequired>
+                        <FormLabel>PAN</FormLabel>
+                        <Input type='text' placeholder='Enter PAN' rounded={'lg'} size={'sm'} />
+                    </FormControl>
+                </GridItem>
                 <GridItem mb={2} colSpan={2} id="address">
                     <FormControl isRequired>
                         <FormLabel>Address</FormLabel>
