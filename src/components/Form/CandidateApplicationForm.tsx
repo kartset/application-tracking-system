@@ -26,7 +26,7 @@ const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
 
     return (<>
         <SteppperWrapper activeStep={activeStep} setActiveStep={setActiveStep} />
-        {activeStep === 0 ? <ResumeForm /> : activeStep === 1 ? <ApplicantDetailsForm /> : <></> }
+        {activeStep === 0 ? <ResumeForm /> : activeStep === 1 ? <ApplicantDetailsForm /> : activeStep === 2 ? <DocumentsUploadForm /> : <></> }
        
         <Flex justifyContent={'end'}>
             <Button 
@@ -143,8 +143,8 @@ const ResumeForm = () => {
 const ApplicantDetailsForm = () => {
     return (
         <form id='applicantDetailsForm' onSubmit={(e) => {e.preventDefault()}}>
-            <Grid gap={4} templateColumns='repeat(2, 1fr)'>
-                <GridItem mt={2} mb={2} colSpan={1} id="firstName">
+            <Grid mt={2} gap={4} templateColumns='repeat(2, 1fr)'>
+                <GridItem mb={2} colSpan={1} id="firstName">
                     <FormControl isRequired>
                         <FormLabel>First Name</FormLabel>
                         <Input type='text' placeholder='Enter First Name' rounded={'lg'} size={'sm'} />
@@ -191,6 +191,36 @@ const ApplicantDetailsForm = () => {
     )
 }
 
+const DocumentsUploadForm = () => {
+    return (
+        <Grid gap={4} templateColumns='repeat(2, 1fr)'>
+            <GridItem mt={2} mb={2} colSpan={1} id="aadhaarFront">
+                <FormControl isRequired>
+                    <FormLabel>Addhaar Front Photo</FormLabel>
+                    <input type='file' />
+                </FormControl>
+            </GridItem>
+            <GridItem mt={2} mb={2} colSpan={1} id="aadhaarBack">
+                <FormControl isRequired>
+                    <FormLabel>Addhaar Back Photo</FormLabel>
+                    <input type='file' />
+                </FormControl>
+            </GridItem>
+            <GridItem mt={2} mb={2} colSpan={1} id="panFront">
+                <FormControl isRequired>
+                    <FormLabel>PAN Front Photo</FormLabel>
+                    <input type='file' />
+                </FormControl>
+            </GridItem>
+            <GridItem mt={2} mb={2} colSpan={1} id="panBack">
+                <FormControl isRequired>
+                    <FormLabel>PAN Back Photo</FormLabel>
+                    <input type='file' />
+                </FormControl>
+            </GridItem>
+        </Grid>
+    )
+}
 
 
 export default CandidateApplicationForm

@@ -29,7 +29,7 @@ const NavModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
 
 export const ApplyModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
   return (
-        <Modal size={'lg'} isOpen={isOpen} onClose={onClose}>
+        <Modal size={'3xl'} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader style={{textAlign:'center'}} mt={1} mb={1}>
