@@ -22,7 +22,7 @@ export const loginSlice = createSlice({
         state.profile = payload.payload
     }
   },
-  extraReducers: {}
+  extraReducers: (builder) => {}
 })
 
 export const { setUser, setProfile } = loginSlice.actions
