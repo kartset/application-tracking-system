@@ -40,7 +40,7 @@ const Navbar = () => {
       };
     }, []);
   return (
-        <chakra.nav>
+        <chakra.nav className='nav'>
              <Box className={`navbar ${scrolling ? "scrolled" : ""}`}>
                 <Box className={`brand ${scrolling ? "text-scrolled" : ""}`}>AT-System</Box>
                 {Object.keys(profile).length === 0 ?
