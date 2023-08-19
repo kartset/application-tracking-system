@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './error-page';
 import Jobs from './routes/jobs/jobs';
 import Vacancies from './routes/vacancies/vacancies';
+import AppWrapper from './routes/app/app';
 
 export const router = createBrowserRouter([
   {
@@ -15,9 +16,14 @@ export const router = createBrowserRouter([
         element: <Jobs />
       },
       {
-        path: 'vacancies',
-        element: <Vacancies />
-      }
+        path: "app",
+        element: <AppWrapper />,
+        errorElement: <ErrorPage />,
+        children: [{
+            path: 'vacancies',
+            element: <Vacancies />
+        }]
+      },
     ],
   },
 ]);
