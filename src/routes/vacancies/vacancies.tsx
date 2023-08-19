@@ -5,6 +5,15 @@ import {
     HamburgerIcon, Search2Icon 
 } from "@chakra-ui/icons"
 import img from '../../assets/bell.png'
+import dash from '../../assets/blue.png'
+import check from '../../assets/check.png'
+import people from '../../assets/youth.png'
+import clock from '../../assets/wall-clock.png'
+import chat from '../../assets/chat.png'
+import link from '../../assets/link.png'
+
+
+
 import { Link } from "react-router-dom"
 import { 
     Avatar, AvatarBadge, Box, Button, 
@@ -14,7 +23,7 @@ import {
     Input, InputGroup, InputLeftElement, Select, 
     TableContainer, Table, Thead, Tr, Th, Tbody, Td, 
     chakra, useColorModeValue, Icon, Flex, HStack, 
-    Text, IconButton, 
+    Text, IconButton, Image, 
 } from "@chakra-ui/react"
 import { useState } from "react"
 
@@ -90,13 +99,52 @@ const AppNavbar = () => {
 
 const AppSidebar = () => {
   return (
-    <Box></Box>
-  )
+    <Grid height={593} templateRows='repeat(17, 1fr)' >
+        <GridItem style={{display:'flex', alignItems:'center', justifyContent:'center'}} className={"brand text-scrolled"} rowSpan={2} >AT-System</GridItem>
+        <GridItem style={{display:'flex', alignItems:'center', justifyContent:'center'}} rowSpan={3}>
+            <Image width={'35%'} height={'90%'} borderRadius={'10px'} src={url} />
+        </GridItem>
+        <GridItem style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}} fontSize={'14px'} color={'white'} rowSpan={2} >
+            <Text>Kartik Setia</Text>
+            <Text color={'#606267'} >kartset10@gmail.com</Text>
+        </GridItem>
+        <GridItem gap={3} style={{display:'flex', flexDirection:'column', alignItems:'center'}} fontSize={'14px'} color={'white'} rowSpan={10}>
+            <Flex alignItems={'center'} >
+                <Image boxSize='20px' src={dash} />
+                <Text ml={3} fontSize={'19px'}>Dashboard</Text>
+            </Flex>
+            <Flex alignItems={'center'} justifyContent={'space-between'} >
+            <Image boxSize='20px' src={check} />
+                <Text  ml={3} fontSize={'19px'}>Vacancies</Text>
+            </Flex>
+            <Flex alignItems={'center'} justifyContent={'space-between'} >
+                <Image boxSize='20px' src={people} />
+                <Text ml={3} fontSize={'19px'}>Candidates</Text>
+            </Flex>
+            <Flex alignItems={'center'} justifyContent={'space-between'} >
+                <Image boxSize='20px' src={clock} />
+                <Text ml={3} fontSize={'19px'}>Schedules</Text>
+            </Flex>
+            <Flex alignItems={'center'} justifyContent={'space-between'} >
+                <Image boxSize='20px' src={people} />
+                <Text ml={3} fontSize={'19px'}>Employess</Text>
+            </Flex>
+            <Flex alignItems={'center'} justifyContent={'space-between'} >
+                <Image boxSize='20px' src={chat} />
+                <Text ml={3} fontSize={'19px'}>Chat</Text>
+            </Flex>
+            <Flex alignItems={'center'} justifyContent={'space-between'} >
+                <Image boxSize='20px' src={link} />
+                <Text ml={3} fontSize={'19px'}>Connected Apps</Text>
+            </Flex>
+        </GridItem>
+    </Grid>
+  ) 
 }
 
 const VacanciesSearchBar = () => {
     return (
-        <Grid ml={4} gap={6} templateColumns={'repeat(6, 1fr)'}>
+        <Grid ml={4} gap={10} templateColumns={'repeat(6, 1fr)'}>
             <GridItem colSpan={3} >
                 <FormControl>
                     <FormLabel fontSize={'12px'} >What are you looking for ?</FormLabel>
