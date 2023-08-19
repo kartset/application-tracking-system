@@ -4,6 +4,7 @@ import ErrorPage from './error-page';
 import Jobs from './routes/jobs/jobs';
 import Vacancies from './routes/vacancies/vacancies';
 import AppWrapper from './routes/app/app';
+import Candidates from './routes/candidates/candidates';
 
 export const router = createBrowserRouter([
   {
@@ -19,10 +20,16 @@ export const router = createBrowserRouter([
         path: "app",
         element: <AppWrapper />,
         errorElement: <ErrorPage />,
-        children: [{
-            path: 'vacancies',
-            element: <Vacancies />
-        }]
+        children: [
+            {
+                path: 'vacancies',
+                element: <Vacancies />
+            },
+            {
+                path:'candidates',
+                element: <Candidates />
+            }
+        ]
       },
     ],
   },
