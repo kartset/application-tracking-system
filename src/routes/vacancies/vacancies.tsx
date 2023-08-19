@@ -109,34 +109,34 @@ const AppSidebar = () => {
             <Text color={'#606267'} >kartset10@gmail.com</Text>
         </GridItem>
         <GridItem gap={3} style={{display:'flex', flexDirection:'column', alignItems:'center'}} fontSize={'14px'} color={'white'} rowSpan={10}>
-            <Flex alignItems={'center'} >
+            <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
                 <Image boxSize='20px' src={dash} />
                 <Text ml={3} fontSize={'19px'}>Dashboard</Text>
             </Flex>
-            <Flex alignItems={'center'} justifyContent={'space-between'} >
-            <Image boxSize='20px' src={check} />
+            <Flex bgColor={'#2A2B2D'} p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
+                <Image boxSize='20px' src={check} />
                 <Text  ml={3} fontSize={'19px'}>Vacancies</Text>
             </Flex>
-            <Flex alignItems={'center'} justifyContent={'space-between'} >
+            <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
                 <Image boxSize='20px' src={people} />
                 <Text ml={3} fontSize={'19px'}>Candidates</Text>
             </Flex>
-            <Flex alignItems={'center'} justifyContent={'space-between'} >
+            <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
                 <Image boxSize='20px' src={clock} />
                 <Text ml={3} fontSize={'19px'}>Schedules</Text>
             </Flex>
-            <Flex alignItems={'center'} justifyContent={'space-between'} >
+            <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
                 <Image boxSize='20px' src={people} />
                 <Text ml={3} fontSize={'19px'}>Employess</Text>
             </Flex>
-            <Flex alignItems={'center'} justifyContent={'space-between'} >
+            <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
                 <Image boxSize='20px' src={chat} />
                 <Text ml={3} fontSize={'19px'}>Chat</Text>
             </Flex>
-            <Flex alignItems={'center'} justifyContent={'space-between'} >
+            {/* <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
                 <Image boxSize='20px' src={link} />
                 <Text ml={3} fontSize={'19px'}>Connected Apps</Text>
-            </Flex>
+            </Flex> */}
         </GridItem>
     </Grid>
   ) 
