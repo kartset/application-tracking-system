@@ -1,20 +1,17 @@
 import {
-    Box, Button, Flex, Grid, GridItem, Step, StepIcon, StepIndicator, 
-    StepNumber, StepSeparator, StepStatus, 
-    StepTitle, Stepper, useSteps, FormControl,
-    FormLabel,
-    FormHelperText,
-    Input,
+    Box, Button, Flex, Grid, GridItem, 
+    useSteps, FormControl,FormLabel, Input,
 } from '@chakra-ui/react'
 import './form.css'
 import { useEffect, useRef } from 'react'
 import { useToast } from '@chakra-ui/react'
+import SteppperWrapper from '../Stepper'
 
 const count = 1
 const formats = ['doc', 'docx', 'pdf']
-const steps = [ { title: 'Resume'}, { title: 'Contact'}, { title: 'Documents'}]
 
 const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
+    const steps = [ { title: 'Resume'}, { title: 'Contact'}, { title: 'Documents'}]
     const { activeStep, setActiveStep } = useSteps({index: 0, count: steps.length})
     const toast = useToast()
 
@@ -25,11 +22,19 @@ const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
     }
 
     return (<>
-        <SteppperWrapper activeStep={activeStep} setActiveStep={setActiveStep} />
-        {activeStep === 0 ? <ResumeForm /> : activeStep === 1 ? <ApplicantDetailsForm /> : activeStep === 2 ? <DocumentsUploadForm /> : <></> }
+        <SteppperWrapper steps={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
+        
+        {
+            activeStep === 0 ?  <ResumeForm /> 
+            :   activeStep === 1 ?  <ApplicantDetailsForm /> 
+            :   activeStep === 2 ?  <DocumentsUploadForm /> 
+            :   <></> 
+        }
        
         <Flex justifyContent={'end'}>
             <Button 
+                size={'sm'} 
+                colorScheme="blue" 
                 onClick={() => {
                     if(activeStep < steps.length-1) {
                         setActiveStep(activeStep+1) 
@@ -39,8 +44,6 @@ const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
                         onSubmit()
                     }
                 } }
-                size={'sm'} 
-                colorScheme="blue" 
             >
                 {activeStep < steps.length-1 ? 'Next' : 'Submit'}
             </Button>
@@ -48,23 +51,6 @@ const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
     </>)
 }
 
-const SteppperWrapper:React.FC<any> = ({activeStep, setActiveStep}) => {
-    return (
-        <Stepper index={activeStep}>
-            {steps.map((step, index) => (
-                <Step key={index} onClick={() => setActiveStep(index)}>
-                    <StepIndicator>
-                        <StepStatus complete={<StepIcon />} incomplete={<StepNumber />} active={<StepNumber />} />
-                    </StepIndicator>
-                    <Box flexShrink='0'>
-                        <StepTitle>{step.title}</StepTitle>
-                    </Box>
-                    <StepSeparator />
-                </Step>
-            ))}
-        </Stepper>
-    )
-}
 
 const ResumeForm = () => {
     const drop = useRef<any>(null);
