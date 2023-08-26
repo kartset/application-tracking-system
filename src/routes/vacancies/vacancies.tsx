@@ -1,18 +1,12 @@
 import { 
-    AddIcon, ArrowLeftIcon, ArrowRightIcon, 
-    ChevronDownIcon, ChevronLeftIcon, 
-    ChevronRightIcon, DeleteIcon, EditIcon, 
-    HamburgerIcon, Search2Icon 
+    AddIcon, Search2Icon 
 } from "@chakra-ui/icons"
 import { 
-    Box, Button, Menu, MenuButton, MenuItem, MenuList,  
-    Grid, GridItem, Heading, FormControl, FormLabel, 
-    Input, InputGroup, InputLeftElement, Select, 
-    TableContainer, Table, Thead, Tr, Th, Tbody, Td, 
-    chakra, useColorModeValue, Icon, Flex, HStack, 
-    Text, IconButton, 
+    Box, Button, Grid, GridItem, Heading, FormControl, 
+    FormLabel, Input, InputGroup, InputLeftElement, 
+    Select
 } from "@chakra-ui/react"
-import { useState } from "react"
+import TableWrapper from "../../components/Table"
 
 
 
@@ -25,16 +19,7 @@ const Vacancies = () => {
         <GridItem ml={4} rounded={'2xl'} mr={4} mt={3} as={'div'} style={{backgroundColor:'white', boxShadow: '2px 0px 2px rgba(0, 0, 0, 0.2)', display:'grid', alignItems:'center'}} rowSpan={4}>
             <VacanciesSearchBar />
         </GridItem>
-        <GridItem style={{ borderRadius:'1rem', border:'1px #E3E9F0 solid', backgroundColor:'white', boxShadow: '2px 0px 2px rgba(0, 0, 0, 0.2)'}} ml={4} mr={4} mt={3} rowSpan={13}>
-            <AppTable />
-            <Flex justifyContent={'space-between'}>
-                <Flex p={3}>
-                    <Text wordBreak="unset">Go to:</Text>
-                    <Input ml={1} size='xs' rounded={'lg'} w="40px" />
-                </Flex>
-                <Pagination />
-            </Flex>
-        </GridItem>
+        <TableWrapper />
     </>)
 }
 
@@ -78,200 +63,5 @@ const VacanciesSearchBar = () => {
         </Grid>
     )
 }
-
-const AppTable = () => {
-    return (
-        <TableContainer borderRadius={'1rem'} >
-            <Table size='sm'>
-                <Thead bgColor={'white'}>
-                    <Tr>
-                        <Th p={3} >Position</Th>
-                        <Th p={3} >Type</Th>
-                        <Th p={3} >Curr. Vac.</Th>
-                        <Th p={3} >Public</Th>
-                        <Th p={3} >Remote</Th>
-                        <Th p={3} >Posted</Th>
-                        <Th p={3} >Salary</Th>
-                        <Th p={3} >Location</Th>
-                        <Th p={3} >Experience</Th>
-                        <Th p={3} >Equity</Th>
-                        <Th p={3}>Actions</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    <Tr>
-                        <Td p={3} >SDE-1 Frontend</Td>
-                        <Td p={3} >Full-Time</Td>
-                        <Td p={3} textAlign={'center'} >4</Td>
-                        <Td p={3} >Yes</Td>
-                        <Td p={3} >True</Td>
-                        <Td p={3} >23-10-2023</Td>
-                        <Td p={3} >10-12Lac</Td>
-                        <Td p={3} >Delhi</Td>
-                        <Td p={3} >5+ years</Td>
-                        <Td p={3} >0.1-0.5%</Td>
-                        <Td>
-                            <Flex flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} >
-                                <IconButton size={'sm'} variant={'ghost'} icon={<HamburgerIcon color={'green'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<EditIcon color={'blue'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<DeleteIcon color={'red'} />} aria-label={""} />
-                            </Flex>
-                        </Td>
-                    </Tr>
-                    <Tr>
-                        <Td p={3} >SDE-1 Backend</Td>
-                        <Td p={3} >Full Time</Td>
-                        <Td p={3} textAlign={'center'} >7</Td>
-                        <Td p={3} >No</Td>
-                        <Td p={3} >True</Td>
-                        <Td p={3} >23-10-2023</Td>
-                        <Td p={3} >10-12Lac</Td>
-                        <Td p={3} >Gurugram</Td>
-                        <Td p={3} >Fresher</Td>
-                        <Td p={3} >0.1-0.5%</Td>
-                        <Td>
-                            <Flex flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} >
-                                <IconButton size={'sm'} variant={'ghost'} icon={<HamburgerIcon color={'green'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<EditIcon color={'blue'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<DeleteIcon color={'red'} />} aria-label={""} />
-                            </Flex>
-                        </Td>
-                    </Tr>
-                    <Tr>
-                        <Td p={3} >Business Manager</Td>
-                        <Td p={3} >Part Time</Td>
-                        <Td p={3} textAlign={'center'} >10</Td>
-                        <Td p={3} >No</Td>
-                        <Td p={3} >False</Td>
-                        <Td p={3} >23-10-2023</Td>
-                        <Td p={3} >10-12Lac</Td>
-                        <Td p={3} >Noida</Td>
-                        <Td p={3} >10+</Td>
-                        <Td p={3} >0.1-0.5%</Td>
-                        <Td>
-                            <Flex flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} >
-                                <IconButton size={'sm'} variant={'ghost'} icon={<HamburgerIcon color={'green'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<EditIcon color={'blue'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<DeleteIcon color={'red'} />} aria-label={""} />
-                            </Flex>
-                        </Td>
-                    </Tr>
-                    <Tr>
-                        <Td p={3} >Business Manager</Td>
-                        <Td p={3} >Part Time</Td>
-                        <Td p={3} textAlign={'center'} >10</Td>
-                        <Td p={3} >No</Td>
-                        <Td p={3} >False</Td>
-                        <Td p={3} >23-10-2023</Td>
-                        <Td p={3} >10-12Lac</Td>
-                        <Td p={3} >Noida</Td>
-                        <Td p={3} >10+</Td>
-                        <Td p={3} >0.1-0.5%</Td>
-                        <Td>
-                            <Flex flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} >
-                                <IconButton size={'sm'} variant={'ghost'} icon={<HamburgerIcon color={'green'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<EditIcon color={'blue'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<DeleteIcon color={'red'} />} aria-label={""} />
-                            </Flex>
-                        </Td>
-                    </Tr>
-                    <Tr>
-                        <Td  p={3} >Business Manager</Td>
-                        <Td  p={3} >Part Time</Td>
-                        <Td  p={3} textAlign={'center'} >10</Td>
-                        <Td  p={3} >No</Td>
-                        <Td  p={3} >False</Td>
-                        <Td  p={3} >23-10-2023</Td>
-                        <Td  p={3} >10-12Lac</Td>
-                        <Td  p={3} >Noida</Td>
-                        <Td  p={3} >10+</Td>
-                        <Td  p={3} >0.1-0.5%</Td>
-                        <Td>
-                            <Flex flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} >
-                                <IconButton size={'sm'} variant={'ghost'} icon={<HamburgerIcon color={'green'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<EditIcon color={'blue'} />} aria-label={""} />
-                                <IconButton size={'sm'} variant={'ghost'} icon={<DeleteIcon color={'red'} />} aria-label={""} />
-                            </Flex>
-                        </Td>
-                    </Tr>                   
-                </Tbody>
-            </Table>
-        </TableContainer>
-    )
-}
-
-
-const Pagination = () => {
-    
-    const PagButton = (props:any) => {
-        const activeStyle = {
-            bg: "brand.600",
-            _dark: {bg: "brand.500",},
-            fontWeight:'bold', 
-            backgroundColor: '#EDF2F9'
-        };
-        return (
-            <Button variant={'outline'} fontWeight={'normal'} size={'xs'} mx={1} px={4} py={2} rounded="md" bg="white" _dark={{bg: "gray.800",}}
-                color="gray.700" opacity={props.disabled && 0.6} 
-                cursor={props.disabled && "not-allowed"} {...(props.active && activeStyle)}
-            >
-                {props.children}
-            </Button>
-        );
-    };
-  
-    const MButton = (props:any) => {
-        const DoubleArrow = props.left ? ArrowLeftIcon : ArrowRightIcon;
-        const [hovered, setHovered] = useState(false);
-        const hoverColor = useColorModeValue("brand.800", "brand.700");
-        return (
-            <chakra.a w={4} py={2} color="gray.700" _dark={{color: "gray.200",}}
-                onMouseOver={() => setHovered(true)}
-                onMouseOut={() => setHovered(false)}
-                cursor="pointer"
-                textAlign="center"
-            >
-                {hovered ? (
-                    <Icon
-                        as={DoubleArrow}
-                        boxSize={3}
-                        cursor="pointer"
-                        color={hoverColor}
-                    />
-                ) : (<Text color={'black'} boxSize={4} opacity={0.5}>...</Text>)}
-            </chakra.a>
-        );
-    };
-  
-    return (
-        <Flex mr={2}>
-            <HStack>
-                <PagButton>
-                    <Icon as={ChevronLeftIcon} color="gray.700" _dark={{color: "gray.200",}} boxSize={4} />
-                </PagButton>
-                <PagButton>1</PagButton>
-                <PagButton active>2</PagButton>
-                <PagButton>3</PagButton>
-                <MButton right />
-                <PagButton>50</PagButton>
-                <PagButton>
-                    <Icon as={ChevronRightIcon} color="gray.700" _dark={{ color: "gray.200"}} boxSize={4}/>
-                </PagButton>
-                <Menu size={'sm'} >
-                    <MenuButton fontWeight={'normal'} size={'xs'} ml={1} as={Button} rightIcon={<ChevronDownIcon />}>10 / page</MenuButton>
-                    <MenuList >
-                        <MenuItem>20 / page</MenuItem>
-                        <MenuItem>30 / page</MenuItem>
-                        <MenuItem>40 / page</MenuItem>
-                        <MenuItem>50 / page</MenuItem>
-                    </MenuList>
-                </Menu>
-            </HStack>
-        </Flex>
-    );
-  };
-
-
-
 
 export default Vacancies
