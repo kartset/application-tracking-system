@@ -11,6 +11,7 @@ import {
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
 import { useEffect } from "react"
+import Editor from "../../components/Editor/Editor"
 
 const steps = Array(8).fill({ title: '' })
 
@@ -296,16 +297,14 @@ const JobsFormThree = () => {
 
 const JobsFormFour = () => {
     return (
-        <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
+        <Flex mt={4} flexDirection={'column'}>
             <Flex flex={1} flexDirection={'column'}>
                 <Flex justifyContent={'start'} flex={1} flexDirection={'column'} >
                     <Box fontSize={'20px'} ><b>Description</b></Box>
                     <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
                 </Flex>
             </Flex>
-            <Flex>
-                
-            </Flex>
+            <Editor />
         </Flex>
     )
 }
