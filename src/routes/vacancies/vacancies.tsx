@@ -8,14 +8,15 @@ import {
     ModalOverlay, ModalHeader, ModalCloseButton, 
     ModalBody, ModalFooter, useSteps, useToast, 
     Flex, Switch, Text, Checkbox, InputLeftAddon, 
-    Tag, TagLabel, TagRightIcon,
+    Tag, TagLabel, TagRightIcon, ListItem, OrderedList, 
+    RadioGroup, Stack, Radio,
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
 import { useEffect, useState } from "react"
 import Editor from "../../components/Editor/Editor"
 
-const steps = Array(8).fill({ title: '' })
+const steps = Array(6).fill({ title: '' })
 
 const Vacancies = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -66,13 +67,16 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                         activeStep === 0 ? 
                             <JobPostFormOne /> 
                         : activeStep === 1 ? <JobPostFormTwo /> 
-                        : activeStep === 2 ? <JobsFormThree /> : <JobsFormFour />
+                        : activeStep === 2 ? <JobsFormThree /> 
+                        : activeStep === 3 ? <JobsFormFour /> 
+                        : activeStep === 4 ? <JobsFormFive />
+                        : <JobsFormSix />
                     }
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='blue' mr={3} onClick={onClose}>Close</Button>
+                    <Button variant='ghost' mr={3} onClick={onClose}>Close</Button>
                     <Button
-                        variant='ghost'
+                        colorScheme='blue'
                         onClick={() => {
                             if(activeStep < steps.length-1) {
                                 setActiveStep(activeStep+1) 
@@ -82,7 +86,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                             }
                         } }
                     >
-                        Secondary Action
+                        Next
                     </Button>
                 </ModalFooter>
             </ModalContent>
@@ -262,10 +266,10 @@ const JobsFormThree = () => {
                     <Box fontSize={'20px'} ><b>Skils</b></Box>
                     <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
                 </Flex>
-                <Flex mt={4} justifyContent={'start'} flex={1} flexDirection={'column'} >
+                {/* <Flex mt={4} justifyContent={'start'} flex={1} flexDirection={'column'} >
                     <Box fontSize={'20px'} ><b>Requirements</b></Box>
                     <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-                </Flex>
+                </Flex> */}
             </Flex>
             <Flex flexDirection={'column'} >
                 <Flex gap={2} flex={1} flexDirection={'column'} >
@@ -281,7 +285,7 @@ const JobsFormThree = () => {
                         ))}
                     </Flex>
                 </Flex>
-                <Flex gap={2} flexDirection={'column'} >
+                {/* <Flex gap={2} flexDirection={'column'} >
                     <Flex gap={2} flexDirection={'column'} mt={4} justifyContent={'center'}>
                         <Input placeholder="Add a Requirement" />
                         <Input placeholder="Add a Requirement" />
@@ -291,7 +295,7 @@ const JobsFormThree = () => {
                     <Flex>
                         <Button size={'sm'} colorScheme="blue" >Add New</Button>
                     </Flex>
-                </Flex>
+                </Flex> */}
             </Flex>
         </Flex>
     )
@@ -309,6 +313,44 @@ const JobsFormFour = () => {
             </Flex>
             <Editor setHTML={setHTML} />
             {/* <div dangerouslySetInnerHTML={{__html:JSON.parse(HTML)}} ></div> */}
+        </Flex>
+    )
+}
+
+const JobsFormFive = () => {
+    return (
+        <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
+            <Flex flex={1} mt={4} justifyContent={'start'} flexDirection={'column'} >
+                <Box fontSize={'20px'} ><b>Questions</b></Box>
+                <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+            </Flex>
+            <Flex flex={1} gap={2} flexDirection={'column'} >
+                <Flex gap={2} flexDirection={'column'} mt={4} justifyContent={'center'}>
+                    <OrderedList>
+                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
+                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
+                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
+                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
+                    </OrderedList>
+                </Flex>
+                <Flex>
+                    <Button size={'sm'} colorScheme="blue" >Add New</Button>
+                </Flex>
+            </Flex>
+        </Flex>
+    )
+}
+
+const JobsFormSix = () => {
+    const [value, setValue] = useState('1')
+    return (
+        <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
+            <RadioGroup onChange={setValue} value={value}>
+                <Stack direction='column'>
+                    <Radio value='1'>Make it public</Radio>
+                    <Radio value='2'>Share it using the link</Radio>
+                </Stack>
+            </RadioGroup>
         </Flex>
     )
 }
