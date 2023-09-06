@@ -2,7 +2,6 @@
   "name": "ats-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "application-tracking-system.vercel.app/",
   "dependencies": {
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.7.1",
