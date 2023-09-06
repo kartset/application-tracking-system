@@ -523,7 +523,8 @@ body {
   }
   
   .dropdown {
-    z-index: 5;
+    /* in lexical example the z-index was 5, as we are using it in a chakra modal we increased it to 1400 */
+    z-index: 1400;      
     display: block;
     position: absolute;
     box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1),
