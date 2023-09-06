@@ -6,7 +6,9 @@ import {
     FormLabel, Input, InputGroup, InputLeftElement, 
     Select, useDisclosure, Modal, ModalContent, 
     ModalOverlay, ModalHeader, ModalCloseButton, 
-    ModalBody, ModalFooter, useSteps, useToast, Flex, Switch, Text, Checkbox, InputLeftAddon, Tag, TagLeftIcon, TagLabel, TagRightIcon, Divider, Center
+    ModalBody, ModalFooter, useSteps, useToast, 
+    Flex, Switch, Text, Checkbox, InputLeftAddon, 
+    Tag, TagLabel, TagRightIcon,
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
