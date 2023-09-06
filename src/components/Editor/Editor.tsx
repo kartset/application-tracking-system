@@ -20,7 +20,8 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighLightPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import './Editor.css'
-import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
+import { $createLineBreakNode, $createParagraphNode, $createTextNode, $getRoot } from "lexical";
+import { $createListNode } from '@lexical/list'
 import HtmlGeneratorPlugin from "./plugins/HtmlGeneratorPlugin";
 
 function Placeholder() {
@@ -32,14 +33,18 @@ function prepopulatedRichText() {
     if (root.getFirstChild() === null) {
         const paragraph = $createParagraphNode();
         paragraph.append(
-            $createTextNode("The playground is a demo environment built with "),
-            $createTextNode("@lexical/react").toggleFormat("code"),
-            $createTextNode("."),
-            $createTextNode(" Try typing in "),
-            $createTextNode("some text").toggleFormat("bold"),
-            $createTextNode(" with "),
-            $createTextNode("different").toggleFormat("italic"),
-            $createTextNode(" formats.")
+            $createTextNode("Overview\n").toggleFormat('bold'),
+            $createLineBreakNode(),
+            $createLineBreakNode(),
+            $createTextNode("Description\n").toggleFormat('bold'),
+            $createLineBreakNode(),
+            $createLineBreakNode(),
+            $createTextNode("Requirements\n").toggleFormat('bold'),
+            $createListNode('number', 1),
+            $createTextNode("Roles & Responsibilities\n").toggleFormat('bold'),
+            $createListNode('number', 1),
+            $createTextNode("Perks\n").toggleFormat('bold'),
+            $createListNode('number', 1),
         );
         root.append(paragraph);
     }
