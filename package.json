@@ -2,6 +2,7 @@
   "name": "ats-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "application-tracking-system.vercel.app/",
   "dependencies": {
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.7.1",
@@ -18,6 +19,7 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "apisauce": "^3.0.0",
+    "env-cmd": "^10.1.0",
     "framer-motion": "^10.12.22",
     "lexical": "^0.12.0",
     "localforage": "^1.10.0",
@@ -31,11 +33,15 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:staging": "env-cmd -f src/.env.staging react-scripts build"
   },
   "eslintConfig": {
     "extends": [
