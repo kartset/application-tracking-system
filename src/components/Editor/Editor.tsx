@@ -16,13 +16,12 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TRANSFORMERS } from "@lexical/markdown";
-
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighLightPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import './Editor.css'
-import { useRef } from "react";
 import { $createParagraphNode, $createTextNode, $getRoot } from "lexical";
+import HtmlGeneratorPlugin from "./plugins/HtmlGeneratorPlugin";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -31,20 +30,20 @@ function Placeholder() {
 function prepopulatedRichText() {
     const root = $getRoot();
     if (root.getFirstChild() === null) {
-      const paragraph = $createParagraphNode();
-      paragraph.append(
-        $createTextNode("The playground is a demo environment built with "),
-        $createTextNode("@lexical/react").toggleFormat("code"),
-        $createTextNode("."),
-        $createTextNode(" Try typing in "),
-        $createTextNode("some text").toggleFormat("bold"),
-        $createTextNode(" with "),
-        $createTextNode("different").toggleFormat("italic"),
-        $createTextNode(" formats.")
-      );
-      root.append(paragraph);
+        const paragraph = $createParagraphNode();
+        paragraph.append(
+            $createTextNode("The playground is a demo environment built with "),
+            $createTextNode("@lexical/react").toggleFormat("code"),
+            $createTextNode("."),
+            $createTextNode(" Try typing in "),
+            $createTextNode("some text").toggleFormat("bold"),
+            $createTextNode(" with "),
+            $createTextNode("different").toggleFormat("italic"),
+            $createTextNode(" formats.")
+        );
+        root.append(paragraph);
     }
-  }
+}
   
   
 
@@ -71,9 +70,7 @@ const editorConfig = {
     ]
 };
 
-export default function Editor() {
-    const editorStateRef = useRef(null);
-
+const Editor:React.FC<any> = (({setHTML}) => {
     return (
         <LexicalComposer initialConfig={{...editorConfig, editorState: prepopulatedRichText}}>
             <div className="editor-container">
@@ -84,10 +81,11 @@ export default function Editor() {
                         placeholder= {<Placeholder />}
                         ErrorBoundary={LexicalErrorBoundary}
                     />
+                    <HtmlGeneratorPlugin setHTML={setHTML} />
                     <HistoryPlugin />
                     <AutoFocusPlugin />
                     <CodeHighlightPlugin />
-                    <OnChangePlugin onChange={editorState => editorStateRef.current = editorState} />
+                    <OnChangePlugin onChange={editorState => console.log({editorState})} />
                     <ListPlugin />
                     <LinkPlugin />
                     <AutoLinkPlugin />
@@ -96,5 +94,8 @@ export default function Editor() {
                 </div>
             </div>
         </LexicalComposer>
-    );
-}
+    )
+})
+
+
+export default Editor
