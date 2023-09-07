@@ -56,9 +56,9 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     
 
     return (
-        <Modal size={'full'} blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+        <Modal size={'4xl'} blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay  backdropFilter='blur(10px) hue-rotate(90deg)' />
-            <ModalContent>
+            <ModalContent minHeight={'80vh'} >
                 <ModalHeader>Add New Vacancy</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -73,10 +73,20 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                         : <JobsFormSix />
                     }
                 </ModalBody>
-                <ModalFooter>
-                    <Button variant='ghost' mr={3} onClick={onClose}>Close</Button>
-                    <Button
-                        colorScheme='blue'
+                <ModalFooter gap={3}>
+                    <Button variant={'outline'} size={'sm'} colorScheme='blue'
+                        onClick={() => {
+                            if(activeStep === 0) {
+                                onClose()
+                            } else {
+                                setActiveStep(activeStep-1)
+                            }
+                        } }
+                    >
+                        Back
+                    </Button>
+                    <Button size={'sm'} variant={'unstyled'} mr={3} onClick={onClose}>Close</Button>
+                    <Button size={'sm'} colorScheme='teal'
                         onClick={() => {
                             if(activeStep < steps.length-1) {
                                 setActiveStep(activeStep+1) 
@@ -96,23 +106,35 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
 
 const JobPostFormOne = () => {
     return (
-        <Flex flexDirection={'column'}>
-            <Flex mt={4} flexDirection={'row'}>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
+        <Flex gap={4} flexDirection={'row'}>
+            <Flex gap={4} ml={4} flex={1} mt={4} alignItems={'start'} flexDirection={'column'}>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
                     <Box fontSize={'20px'} ><b>Job Title</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title is a name or designation given to a job or position</Box>
                 </Flex>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1}>
-                    <Input placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Job Position</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job position is a function you serve at a company</Box>
+                </Flex>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Job Type</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job type defines the accounting behavior for the related job</Box>
+                </Flex>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Job Location</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job location usually means where the job is performed</Box>
+                </Flex>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Department</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >Department is one part of a large organization</Box>
                 </Flex>
             </Flex>
-            <Flex mt={4} flexDirection={'row'}>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Position</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+            <Flex ml={4} gap={4} flex={1} mt={4} flexDirection={'column'} >
+                <Flex flex={1} justifyContent={'start'} alignItems={'center'}>
+                    <Input width={'75%'} placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
                 </Flex>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} >
-                    <Select rounded={'lg'} size={'sm'} placeholder='Select option'>
+                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
+                    <Select width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
                         <option value='option1'>Fresher</option>
                         <option value='option2'>Associate</option>
                         <option value='option3'>Senior</option>
@@ -121,14 +143,8 @@ const JobPostFormOne = () => {
                         <option value='option6'>Add New...</option>
                     </Select>
                 </Flex>
-            </Flex>
-            <Flex mt={4} flexDirection={'row'}>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Type</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-                </Flex>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} >
-                    <Select rounded={'lg'} size={'sm'} placeholder='Select option'>
+                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
+                    <Select width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
                         <option value='option1'>Freelance</option>
                         <option value='option2'>Full-Time</option>
                         <option value='option3'>Part-Time</option>
@@ -138,24 +154,12 @@ const JobPostFormOne = () => {
                         <option value='option7'>Add New...</option>
                     </Select>
                 </Flex>
-            </Flex>
-            <Flex mt={4} flexDirection={'row'}>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Location</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-                </Flex>
-                <Flex flexDirection={'column'} justifyContent={'center'} flex={1} >
-                    <Input rounded={'lg'} placeholder="Job Location" size={'sm'} />  {/*make it a google places api with city or region selection */}
+                <Flex flex={1} flexDirection={'column'}  justifyContent={'start'} >
+                    <Input width={'75%'} rounded={'lg'} placeholder="Job Location" size={'sm'} />  {/*make it a google places api with city or region selection */}
                     <Checkbox size={'sm'} defaultChecked>Remote Friendly</Checkbox>
                 </Flex>
-            </Flex>
-            <Flex mt={4} flexDirection={'row'}>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Department</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-                </Flex>
-                <Flex justifyContent={'center'} alignItems={'center'} flex={1} >
-                    <Select rounded={'lg'} size={'sm'} placeholder='Select option'>
+                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
+                    <Select width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
                         <option value='option1'>Sales</option>
                         <option value='option2'>Marketing</option>
                         <option value='option3'>Design</option>
@@ -168,94 +172,87 @@ const JobPostFormOne = () => {
 }
 
 const JobPostFormTwo = () => {
-  return (
-    <Flex flexDirection={'column'}>
-        <Flex mt={4} flexDirection={'row'}>
-            <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                <Box fontSize={'20px'} ><b>Immediate Joining</b></Box>
-                <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+    return (<>
+        <Flex gap={4} flexDirection={'row'}>
+            <Flex gap={4} ml={4} alignItems={'start'} flex={1} mt={4} flexDirection={'column'}>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Number of Vacancies</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+                </Flex>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Work Hours</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >The amount of time employee would spend at work during a day</Box>
+                </Flex>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Salary Range</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A salary range is the range of pay offered for performing a job.</Box>
+                </Flex>
+                <Flex justifyContent={'center'} flexDirection={'column'} >
+                    <Box fontSize={'20px'} ><b>Equity</b></Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+                </Flex>
             </Flex>
-            <Flex justifyContent={'center'} alignItems={'center'} flex={1}>
+            <Flex gap={4} mt={4} flex={1} flexDirection={'column'}>
+                <Flex gap={1} flexDirection={'column'} justifyContent={'center'} flex={1}>
+                    <Input width={'75%'} placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
+                    <Checkbox>Hiring Only Women </Checkbox>
+                </Flex>
+                <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1} >
+                    <Select rounded={'lg'} size={'sm'} placeholder='Select'>
+                        { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
+                            return (<option value={'option' + i}>{a}</option>)
+                        })}
+                    </Select>
+                    <Select defaultValue={'option1'} rounded={'lg'} size={'sm'} placeholder='Select'>
+                        <option value={'option1'}>a.m.</option>
+                        <option value={'option2'}>p.m.</option>
+                    </Select>
+                    <Text>-</Text>
+                    <Select rounded={'lg'} size={'sm'} placeholder='Select'>
+                        { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
+                            return (<option value={'option' + i}>{a}</option>)
+                        })}
+                    </Select>
+                    <Select defaultValue={'option2'} rounded={'lg'} size={'sm'} placeholder='Select'>
+                        <option value={'option1'}>a.m.</option>
+                        <option value={'option2'}>p.m.</option>
+                    </Select>
+                </Flex>
+                <Flex gap={1} flexDirection={'column'} justifyContent={'center'} flex={1}>
+                    <Flex gap={2}>
+                        <Select rounded={'lg'} size={'sm'}>
+                            <option value={'option1'}>Hourly</option>
+                            <option value={'option2'}>Weekly</option>
+                            <option value={'option2'}>Monthly</option>
+                            <option value={'option2'}>Full Time</option>
+                        </Select>
+                        <InputGroup size={'sm'} >
+                            <InputLeftAddon rounded={'lg'} children='$' />
+                            <Input type='tel' rounded={'lg'} placeholder='Salary' />
+                        </InputGroup>
+                        <Text>-</Text>
+                        <InputGroup size={'sm'}>
+                            <InputLeftAddon rounded={'lg'} children='$' />
+                            <Input type='tel' rounded={'lg'} placeholder='Salary' />
+                        </InputGroup>
+                    </Flex>
+                    <Checkbox defaultChecked>Negotiable</Checkbox>
+                </Flex>
+                <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1}>
+                    <Input placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
+                    <Text>-</Text>
+                    <Input placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
+                    
+                </Flex>
+            </Flex>
+        </Flex>
+        <Flex mt={4} gap={4} justifyContent={'end'} alignItems={'end'}>
+            <Box fontSize={'20px'} ><b>Immediate Joining</b></Box>
+            <Flex justifyContent={'center'} alignItems={'center'}>
                 <Switch id='immediate-joining' />
             </Flex>
         </Flex>
-        <Flex mt={4} flexDirection={'row'}>
-            <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                <Box fontSize={'20px'} ><b>Number of Vacancies</b></Box>
-                <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-            </Flex>
-            <Flex flexDirection={'column'} justifyContent={'center'} flex={1}>
-                <Input />
-                <Checkbox>Hiring Only Women </Checkbox>
-            </Flex>
-        </Flex>
-        <Flex mt={4} flexDirection={'row'}>
-            <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                <Box fontSize={'20px'} ><b>Work Hours</b></Box>
-                <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-            </Flex>
-            <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1} >
-                <Select rounded={'lg'} size={'sm'} placeholder='Select option'>
-                    { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
-                        return (<option value={'option' + i}>{a}</option>)
-                    })}
-                </Select>
-                <Select defaultValue={'option1'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                    <option value={'option1'}>a.m.</option>
-                    <option value={'option2'}>p.m.</option>
-                </Select>
-                <Text>-</Text>
-                <Select rounded={'lg'} size={'sm'} placeholder='Select option'>
-                    { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
-                        return (<option value={'option' + i}>{a}</option>)
-                    })}
-                </Select>
-                <Select defaultValue={'option2'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                    <option value={'option1'}>a.m.</option>
-                    <option value={'option2'}>p.m.</option>
-                </Select>
-            </Flex>
-        </Flex>
-        <Flex mt={4} flexDirection={'row'}>
-            <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                <Box fontSize={'20px'} ><b>Salary Range</b></Box>
-                <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-            </Flex>
-            <Flex flexDirection={'column'} justifyContent={'center'} flex={1}>
-                <Flex gap={2}>
-                    <Select>
-                        <option value={'option1'}>Hourly</option>
-                        <option value={'option2'}>Weekly</option>
-                        <option value={'option2'}>Monthly</option>
-                        <option value={'option2'}>Full Time</option>
-                    </Select>
-                    <InputGroup>
-                        <InputLeftAddon children='$' />
-                        <Input type='tel' placeholder='Salary' />
-                    </InputGroup>
-                    <Text>-</Text>
-                    <InputGroup>
-                        <InputLeftAddon children='$' />
-                        <Input type='tel' placeholder='Salary' />
-                    </InputGroup>
-                </Flex>
-                <Checkbox defaultChecked>Negotiable</Checkbox>
-            </Flex>
-        </Flex>
-        <Flex mt={4} flexDirection={'row'}>
-            <Flex justifyContent={'center'} alignItems={'center'} flex={1} flexDirection={'column'} >
-                <Box fontSize={'20px'} ><b>Equity</b></Box>
-                <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-            </Flex>
-            <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1}>
-                <Input />
-                <Text>-</Text>
-                <Input />
-                
-            </Flex>
-        </Flex>
-    </Flex>
-  )
+    </>)
 }
 
 const JobsFormThree = () => {
