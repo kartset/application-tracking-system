@@ -9,12 +9,13 @@ import {
     ModalBody, ModalFooter, useSteps, useToast, 
     Flex, Switch, Text, Checkbox, InputLeftAddon, 
     Tag, TagLabel, TagRightIcon, ListItem, OrderedList, 
-    RadioGroup, Stack, Radio,
+    Stack, CheckboxGroup,
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
 import { useEffect, useState } from "react"
 import Editor from "../../components/Editor/Editor"
+import CreatableSelect from 'react-select/creatable';
 
 const steps = Array(6).fill({ title: '' })
 
@@ -263,16 +264,10 @@ const JobsFormThree = () => {
                     <Box fontSize={'20px'} ><b>Skils</b></Box>
                     <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
                 </Flex>
-                {/* <Flex mt={4} justifyContent={'start'} flex={1} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Requirements</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-                </Flex> */}
             </Flex>
             <Flex flexDirection={'column'} >
                 <Flex gap={2} flex={1} flexDirection={'column'} >
-                    <Flex justifyContent={'center'}>
-                        <Input placeholder="Select a Skill" />
-                    </Flex>
+                    <CreatableSelect isClearable options={[]} />
                     <Flex gap={2}>
                         {['md', 'md', 'md','md', 'md'].map((size) => (
                             <Tag size={size} key={size} variant='subtle' colorScheme='cyan'>
@@ -282,17 +277,6 @@ const JobsFormThree = () => {
                         ))}
                     </Flex>
                 </Flex>
-                {/* <Flex gap={2} flexDirection={'column'} >
-                    <Flex gap={2} flexDirection={'column'} mt={4} justifyContent={'center'}>
-                        <Input placeholder="Add a Requirement" />
-                        <Input placeholder="Add a Requirement" />
-                        <Input placeholder="Add a Requirement" />
-                        <Input placeholder="Add a Requirement" />
-                    </Flex>
-                    <Flex>
-                        <Button size={'sm'} colorScheme="blue" >Add New</Button>
-                    </Flex>
-                </Flex> */}
             </Flex>
         </Flex>
     )
@@ -301,20 +285,14 @@ const JobsFormThree = () => {
 const JobsFormFour = () => {
     const [HTML, setHTML] = useState<string>(JSON.stringify('<span></span>'))    
     return (
-        <Flex mt={4} flexDirection={'column'}>
-            <Flex flex={1} flexDirection={'column'}>
-                <Flex justifyContent={'start'} flex={1} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Description</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
-                </Flex>
-            </Flex>
-            <Editor setHTML={setHTML} />
-            {/* <div dangerouslySetInnerHTML={{__html:JSON.parse(HTML)}} ></div> */}
-        </Flex>
+        <Editor setHTML={setHTML} />
+        // {/* <div dangerouslySetInnerHTML={{__html:JSON.parse(HTML)}} ></div> */}
     )
 }
 
 const JobsFormFive = () => {
+    const [questions, setQuestions] = useState<number>(2)
+
     return (
         <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
             <Flex flex={1} mt={4} justifyContent={'start'} flexDirection={'column'} >
@@ -322,16 +300,13 @@ const JobsFormFive = () => {
                 <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
             </Flex>
             <Flex flex={1} gap={2} flexDirection={'column'} >
-                <Flex gap={2} flexDirection={'column'} mt={4} justifyContent={'center'}>
-                    <OrderedList>
-                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
-                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
-                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
-                        <ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>
-                    </OrderedList>
-                </Flex>
+                <OrderedList gap={2} mt={4}>
+                    {Array(questions).fill({}).map(a =>{
+                        return(<ListItem mb={2} ><Input placeholder="Enter a Question" /></ListItem>)
+                    })}
+                </OrderedList>
                 <Flex>
-                    <Button size={'sm'} colorScheme="blue" >Add New</Button>
+                    <Button onClick={() =>{setQuestions(questions+1)}} size={'sm'} colorScheme="blue" >Add New</Button>
                 </Flex>
             </Flex>
         </Flex>
@@ -339,15 +314,15 @@ const JobsFormFive = () => {
 }
 
 const JobsFormSix = () => {
-    const [value, setValue] = useState('1')
+    const [value, setValue] = useState<(string | number)[]>(['1'])
     return (
         <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
-            <RadioGroup onChange={setValue} value={value}>
+            <CheckboxGroup onChange={(value) => setValue(value)} value={value}>
                 <Stack direction='column'>
-                    <Radio value='1'>Make it public</Radio>
-                    <Radio value='2'>Share it using the link</Radio>
+                    <Checkbox value='1'>Make it public</Checkbox>
+                    <Checkbox value='2'>Share it using the link</Checkbox>
                 </Stack>
-            </RadioGroup>
+            </CheckboxGroup>
         </Flex>
     )
 }
