@@ -48,7 +48,7 @@ body {
     border-radius: 2px;
     border: 2px solid #eee;
     max-width: 800px;
-    max-height: 300px;
+    max-height:inherit;
     overflow-y: auto;
     overflow-x: auto;
     color: #000;
