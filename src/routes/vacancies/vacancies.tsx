@@ -13,9 +13,11 @@ import {
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import Editor from "../../components/Editor/Editor"
 import CreatableSelect from 'react-select/creatable';
+import { ErrorMessage, Field, Form, Formik } from "formik"
+import * as Yup from 'yup';
 
 const steps = Array(6).fill({ title: '' })
 
@@ -37,8 +39,10 @@ const Vacancies = () => {
 
 const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}) => {
     const toast = useToast()
+    const formOneId = useId()
+    const [currentFormId, setCurrentFormId] = useState(formOneId)
 
-    const onSubmit = () => {
+    const onSubmitFinal = () => {
         console.log('on submit')
         onClose()
         toast({
@@ -51,11 +55,28 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
         })
     }
 
+    const onSubmit = (values:any) => {
+        if(activeStep < steps.length-1) {
+            setActiveStep(activeStep+1) 
+            console.log({values})
+            //send the form data to backend
+        } else {
+            onSubmitFinal()
+            setActiveStep(activeStep+1)
+        }
+    }
+
     useEffect(() => {
         setActiveStep(0)
     }, [isOpen])
-    
 
+    useEffect(() => {
+      if(activeStep === 0) {
+        setCurrentFormId(formOneId)
+      }
+    }, [activeStep])
+    
+    
     return (
         <Modal size={'4xl'} blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay  backdropFilter='blur(10px) hue-rotate(90deg)' />
@@ -66,7 +87,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                     <SteppperWrapper steps={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
                     { 
                         activeStep === 0 ? 
-                            <JobPostFormOne /> 
+                            <JobPostFormOne onSubmit={onSubmit} formId={formOneId} /> 
                         : activeStep === 1 ? <JobPostFormTwo /> 
                         : activeStep === 2 ? <JobsFormThree /> 
                         : activeStep === 3 ? <JobsFormFour /> 
@@ -87,16 +108,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                         Back
                     </Button>
                     <Button size={'sm'} variant={'unstyled'} mr={3} onClick={onClose}>Close</Button>
-                    <Button size={'sm'} colorScheme='teal'
-                        onClick={() => {
-                            if(activeStep < steps.length-1) {
-                                setActiveStep(activeStep+1) 
-                            } else {
-                                onSubmit()
-                                setActiveStep(activeStep+1)
-                            }
-                        } }
-                    >
+                    <Button form={currentFormId} type="submit" size={'sm'} colorScheme='teal'>
                         Next
                     </Button>
                 </ModalFooter>
@@ -105,7 +117,42 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     )
 }
 
-const JobPostFormOne = () => {
+const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
+
+    let jobPositionOptions = [
+        {text:'Fresher', value:'fresher'},
+        {text:'Associate', value:'associate'},
+        {text:'Senior', value:'senior'},
+        {text:'Executive', value:'executive'},
+        {text:'Advisory', value:'advisory'},
+    ]
+
+    let jobTypeOptions = [
+        {text:'Freelance', value:'freelance'},
+        {text:'Full-Time', value:'fullTime'},
+        {text:'Part-Time', value:'partTime'},
+        {text:'Contractual', value:'contractual'},
+        {text:'Internship', value:'internship'},
+        {text:'Seasonal', value:'seasonal'}
+    ]
+
+    let departmentOptions = [
+        {text: 'Sales', value:'sales'},
+        {text: 'Marketing', value:'marketing'},
+        {text: 'Design', value:'design'},
+        {text: 'Engineering', value:'engineering'}
+
+    ]
+    
+    let formSchema = Yup.object({
+        jobTitle: Yup.string().required("Required"),
+        jobPosition: Yup.string().oneOf(['fresher', 'associate', 'senior', 'executive', 'advisory']).required("Required"),
+        jobType: Yup.string().oneOf(['freelance', 'fullTime', 'partTime', 'contractual', 'internship', 'seasonal']).required("Required"),
+        jobLocation: Yup.string().required("Required"),
+        remoteFriendly: Yup.boolean().default(true),
+        department: Yup.string().oneOf(['sales', 'marketing', 'design', 'engineering']).required("Required"),
+    })
+
     return (
         <Flex gap={4} flexDirection={'row'}>
             <Flex gap={4} ml={4} flex={1} mt={4} alignItems={'start'} flexDirection={'column'}>
@@ -130,44 +177,88 @@ const JobPostFormOne = () => {
                     <Box fontSize={'14px'} color={'#4C5A6D'} >Department is one part of a large organization</Box>
                 </Flex>
             </Flex>
-            <Flex ml={4} gap={4} flex={1} mt={4} flexDirection={'column'} >
-                <Flex flex={1} justifyContent={'start'} alignItems={'center'}>
-                    <Input width={'75%'} placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
-                </Flex>
-                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
-                    <Select width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                        <option value='option1'>Fresher</option>
-                        <option value='option2'>Associate</option>
-                        <option value='option3'>Senior</option>
-                        <option value='option4'>Executive</option>
-                        <option value='option5'>Advisory</option>
-                        <option value='option6'>Add New...</option>
-                    </Select>
-                </Flex>
-                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
-                    <Select width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                        <option value='option1'>Freelance</option>
-                        <option value='option2'>Full-Time</option>
-                        <option value='option3'>Part-Time</option>
-                        <option value='option4'>Contractual</option>
-                        <option value='option5'>Internship</option>
-                        <option value='option6'>Seasonal</option>
-                        <option value='option7'>Add New...</option>
-                    </Select>
-                </Flex>
-                <Flex flex={1} flexDirection={'column'}  justifyContent={'start'} >
-                    <Input width={'75%'} rounded={'lg'} placeholder="Job Location" size={'sm'} />  {/*make it a google places api with city or region selection */}
-                    <Checkbox size={'sm'} defaultChecked>Remote Friendly</Checkbox>
-                </Flex>
-                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
-                    <Select width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                        <option value='option1'>Sales</option>
-                        <option value='option2'>Marketing</option>
-                        <option value='option3'>Design</option>
-                        <option value='option4'>Engineering</option>
-                    </Select>
-                </Flex>
-            </Flex>
+            <Formik
+                initialValues={{ jobTitle: '', jobPosition: '', jobType: '', jobLocation: '', remoteFriendly:true,  department: '' }}
+                validationSchema={formSchema}
+                onSubmit={(values) =>  {console.log({values});onSubmit(values)}}
+            >
+                <Form id={formId} style={{flex:1, marginTop:'4px', marginLeft:'4px', display:'flex', flexDirection:'column'}}>
+                    <Field name='jobTitle'>
+                        {({field}:any) => {
+                            return (
+                                <Flex flex={1} justifyContent={'start'} alignItems={'center'}>
+                                    <Input autoFocus
+                                        {...field} width={'75%'} placeholder="Enter Job Title"
+                                        rounded={'lg'} size={'sm'} 
+                                    />
+                                    <ErrorMessage name="jobTitle" />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                    <Field name='jobPosition'>
+                        {({field}:any) => {
+                            return (
+                                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
+                                    <Select {...field} width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
+                                        {jobPositionOptions.map((option) => {
+                                            return (<option key={option.value} value={option.value}>{option.text}</option>)
+                                        })}
+                                    </Select>
+                                    <ErrorMessage name="jobPosition" />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                    <Field name='jobType' >
+                        {({field}:any) => {
+                            return (
+                                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
+                                    <Select {...field} width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
+                                        {jobTypeOptions.map((type) => {
+                                            return (<option key={type.value} value={type.value}>{type.text}</option>)
+                                        })}
+                                    </Select>
+                                    <ErrorMessage name="jobType" />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                    <Field name='jobLocation'>
+                        {({field}:any) => {
+                            return (
+                                <Box display={'flex'} flexDirection={'row'} >
+                                    <Flex gap={1} flex={1} flexDirection={'column'}  justifyContent={'start'} >
+                                        <Input {...field} width={'75%'} rounded={'lg'} placeholder="Job Location" size={'sm'} /> {/*make it a google places api with city or region selection */}
+                                        <Field name='remoteFriendly' >
+                                            {({field}:any) => {
+                                                return (
+                                                    <Checkbox {...field} size={'sm'} defaultChecked>Remote Friendly</Checkbox>
+                                                )
+                                            }}
+                                        </Field>
+                                    </Flex>
+                                    <ErrorMessage name="jobLocation" />
+                                </Box>
+                            )
+                        }}
+                    </Field>
+                    <Field name='department' >
+                        {({field}:any) => {
+                            return (
+                                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
+                                    <Select {...field} width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
+                                        {departmentOptions.map((department) => {
+                                            return (<option key={department.value} value={department.value}>{department.text}</option>)
+                                        })}
+                                    </Select>
+                                    <ErrorMessage name="department" />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                </Form>
+            </Formik>
         </Flex>
     )
 }
@@ -201,7 +292,7 @@ const JobPostFormTwo = () => {
                 <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1} >
                     <Select rounded={'lg'} size={'sm'} placeholder='Select'>
                         { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
-                            return (<option value={'option' + i}>{a}</option>)
+                            return (<option key={a} value={'option' + i}>{a}</option>)
                         })}
                     </Select>
                     <Select defaultValue={'option1'} rounded={'lg'} size={'sm'} placeholder='Select'>
@@ -211,7 +302,7 @@ const JobPostFormTwo = () => {
                     <Text>-</Text>
                     <Select rounded={'lg'} size={'sm'} placeholder='Select'>
                         { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
-                            return (<option value={'option' + i}>{a}</option>)
+                            return (<option key={a} value={'option' + i}>{a}</option>)
                         })}
                     </Select>
                     <Select defaultValue={'option2'} rounded={'lg'} size={'sm'} placeholder='Select'>
