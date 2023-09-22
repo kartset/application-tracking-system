@@ -7,9 +7,9 @@ import {
     Select, useDisclosure, Modal, ModalContent, 
     ModalOverlay, ModalHeader, ModalCloseButton, 
     ModalBody, ModalFooter, useSteps, useToast, 
-    Flex, Switch, Text, Checkbox, InputLeftAddon, 
-    Tag, TagLabel, TagRightIcon, ListItem, OrderedList, 
-    Stack, CheckboxGroup,
+    Flex, Switch, Text, Checkbox, Tag, TagLabel, 
+    TagRightIcon, ListItem, OrderedList, Stack, 
+    CheckboxGroup,
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
@@ -18,6 +18,9 @@ import Editor from "../../components/Editor/Editor"
 import CreatableSelect from 'react-select/creatable';
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import * as Yup from 'yup';
+import SliderWrapper from "../../components/Slider"
+import TimeRange from "../../components/TimeRange"
+import SalaryRange from "../../components/SalaryRange"
 
 const steps = Array(6).fill({ title: '' })
 
@@ -40,6 +43,7 @@ const Vacancies = () => {
 const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}) => {
     const toast = useToast()
     const formOneId = useId()
+    const formTwoId = useId()
     const [currentFormId, setCurrentFormId] = useState(formOneId)
 
     const onSubmitFinal = () => {
@@ -73,6 +77,8 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     useEffect(() => {
       if(activeStep === 0) {
         setCurrentFormId(formOneId)
+      } if(activeStep === 1) {
+        setCurrentFormId(formTwoId)
       }
     }, [activeStep])
     
@@ -88,7 +94,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                     { 
                         activeStep === 0 ? 
                             <JobPostFormOne onSubmit={onSubmit} formId={formOneId} /> 
-                        : activeStep === 1 ? <JobPostFormTwo /> 
+                        : activeStep === 1 ? <JobPostFormTwo onSubmit={onSubmit} formId={formTwoId} /> 
                         : activeStep === 2 ? <JobsFormThree /> 
                         : activeStep === 3 ? <JobsFormFour /> 
                         : activeStep === 4 ? <JobsFormFive />
@@ -146,12 +152,21 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
     
     let formSchema = Yup.object({
         jobTitle: Yup.string().required("Required"),
-        jobPosition: Yup.string().oneOf(['fresher', 'associate', 'senior', 'executive', 'advisory']).required("Required"),
-        jobType: Yup.string().oneOf(['freelance', 'fullTime', 'partTime', 'contractual', 'internship', 'seasonal']).required("Required"),
+        jobPosition: Yup.string().oneOf(jobPositionOptions.map((option) => option.value)).required("Required"),
+        jobType: Yup.string().oneOf(jobTypeOptions.map((option) => option.value)).required("Required"),
         jobLocation: Yup.string().required("Required"),
         remoteFriendly: Yup.boolean().default(true),
-        department: Yup.string().oneOf(['sales', 'marketing', 'design', 'engineering']).required("Required"),
+        department: Yup.string().oneOf(departmentOptions.map((option) => option.value)).required("Required"),
     })
+
+    let initialValues = { 
+        jobTitle: '', 
+        jobPosition: '', 
+        jobType: '', 
+        jobLocation: '', 
+        remoteFriendly:true,  
+        department: '' 
+    }
 
     return (
         <Flex gap={4} flexDirection={'row'}>
@@ -178,9 +193,9 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
                 </Flex>
             </Flex>
             <Formik
-                initialValues={{ jobTitle: '', jobPosition: '', jobType: '', jobLocation: '', remoteFriendly:true,  department: '' }}
+                initialValues={initialValues}
                 validationSchema={formSchema}
-                onSubmit={(values) =>  {console.log({values});onSubmit(values)}}
+                onSubmit={(values) =>  {onSubmit(values)}}
             >
                 <Form id={formId} style={{flex:1, marginTop:'4px', marginLeft:'4px', display:'flex', flexDirection:'column'}}>
                     <Field name='jobTitle'>
@@ -263,13 +278,58 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
     )
 }
 
-const JobPostFormTwo = () => {
+const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
+    
+    let formTwoSchema = Yup.object({
+        numVacancies: Yup.number().min(1, "Vacancies Should be more than 1").required("Required"),
+        onlyWomen: Yup.boolean().default(false),
+        workHours: Yup.object({
+            startTime:Yup.number().default(undefined).required("Required"), 
+            startTimeMeridiem:Yup.string().oneOf(['ante', 'post']).default(undefined).required("Required"),
+            endTime:Yup.number().default(undefined).required("Required"),
+            endTimeMeridiem: Yup.string().oneOf(['ante', 'post']).default(undefined).required("Required"),
+        }).required("Required"),
+        salaryRange: Yup.object({
+            type: Yup.string().oneOf(['hourly', 'weekly', 'monthly', 'fullTime']).required("Required"),
+            start: Yup.number().min(1, "Required").required("Required"),
+            end: Yup.number().min(1, "Required").required("Required"),
+            negotiable: Yup.boolean().default(true)
+        }).required("Required"),
+        equityRange: Yup.object({
+            start: Yup.number().default(0),
+            end: Yup.number().default(0)
+        }).required("Required"),
+        immediateJoining: Yup.boolean().default(true)
+    })
+
+    let initialValues = { 
+        numVacancies: 0, 
+        onlyWomen: false, 
+        workHours: {
+            startTime:undefined, 
+            startTimeMeridiem:undefined,
+            endTime:undefined,
+            endTimeMeridiem: undefined,
+        }, 
+        salaryRange: {
+            type: undefined,
+            start: 0,
+            end: 0,
+            negotiable: true
+        }, 
+        equityRange: {
+            start:0,
+            end: 0
+        },
+        immediateJoining: false
+    }
+    
     return (<>
         <Flex gap={4} flexDirection={'row'}>
             <Flex gap={4} ml={4} alignItems={'start'} flex={1} mt={4} flexDirection={'column'}>
                 <Flex justifyContent={'center'} flexDirection={'column'} >
                     <Box fontSize={'20px'} ><b>Number of Vacancies</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >Total Number People to Hire for this post</Box>
                 </Flex>
                 <Flex justifyContent={'center'} flexDirection={'column'} >
                     <Box fontSize={'20px'} ><b>Work Hours</b></Box>
@@ -281,68 +341,70 @@ const JobPostFormTwo = () => {
                 </Flex>
                 <Flex justifyContent={'center'} flexDirection={'column'} >
                     <Box fontSize={'20px'} ><b>Equity</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
+                    <Box fontSize={'14px'} color={'#4C5A6D'} >An ESOP grants company stock to employees</Box>
                 </Flex>
             </Flex>
-            <Flex gap={4} mt={4} flex={1} flexDirection={'column'}>
-                <Flex gap={1} flexDirection={'column'} justifyContent={'center'} flex={1}>
-                    <Input width={'75%'} placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
-                    <Checkbox>Hiring Only Women </Checkbox>
-                </Flex>
-                <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1} >
-                    <Select rounded={'lg'} size={'sm'} placeholder='Select'>
-                        { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
-                            return (<option key={a} value={'option' + i}>{a}</option>)
-                        })}
-                    </Select>
-                    <Select defaultValue={'option1'} rounded={'lg'} size={'sm'} placeholder='Select'>
-                        <option value={'option1'}>a.m.</option>
-                        <option value={'option2'}>p.m.</option>
-                    </Select>
-                    <Text>-</Text>
-                    <Select rounded={'lg'} size={'sm'} placeholder='Select'>
-                        { [0,1,2,3,4,5,6,7,8,9,10,11,12].map((a,i) => {
-                            return (<option key={a} value={'option' + i}>{a}</option>)
-                        })}
-                    </Select>
-                    <Select defaultValue={'option2'} rounded={'lg'} size={'sm'} placeholder='Select'>
-                        <option value={'option1'}>a.m.</option>
-                        <option value={'option2'}>p.m.</option>
-                    </Select>
-                </Flex>
-                <Flex gap={1} flexDirection={'column'} justifyContent={'center'} flex={1}>
-                    <Flex gap={2}>
-                        <Select rounded={'lg'} size={'sm'}>
-                            <option value={'option1'}>Hourly</option>
-                            <option value={'option2'}>Weekly</option>
-                            <option value={'option2'}>Monthly</option>
-                            <option value={'option2'}>Full Time</option>
-                        </Select>
-                        <InputGroup size={'sm'} >
-                            <InputLeftAddon rounded={'lg'} children='$' />
-                            <Input type='tel' rounded={'lg'} placeholder='Salary' />
-                        </InputGroup>
-                        <Text>-</Text>
-                        <InputGroup size={'sm'}>
-                            <InputLeftAddon rounded={'lg'} children='$' />
-                            <Input type='tel' rounded={'lg'} placeholder='Salary' />
-                        </InputGroup>
-                    </Flex>
-                    <Checkbox defaultChecked>Negotiable</Checkbox>
-                </Flex>
-                <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1}>
-                    <Input placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
-                    <Text>-</Text>
-                    <Input placeholder="Enter Job Title" rounded={'lg'} size={'sm'} />
-                    
-                </Flex>
-            </Flex>
-        </Flex>
-        <Flex mt={4} gap={4} justifyContent={'end'} alignItems={'end'}>
-            <Box fontSize={'20px'} ><b>Immediate Joining</b></Box>
-            <Flex justifyContent={'center'} alignItems={'center'}>
-                <Switch id='immediate-joining' />
-            </Flex>
+            <Formik
+                initialValues={initialValues}
+                validationSchema={formTwoSchema}
+                onSubmit={(values) =>  {onSubmit(values)}}
+            >
+                <Form id={formId} style={{gap:'16px', marginTop:'5px', display:'flex', flex:1, flexDirection:'column' }}>
+                    <Field name="numVacancies">
+                        {({field}:any) => {
+                            return(
+                                <Flex gap={2} flexDirection={'column'} justifyContent={'center'} flex={1}>
+                                    <SliderWrapper name={field.name} type="number" />
+                                    <Field name="onlyWomen" >
+                                        {({field}:any) => {
+                                            return (<Checkbox {...field} size={'sm'} >Hiring Only Women </Checkbox>)
+                                        }}
+                                    </Field>
+                                    <ErrorMessage name="numVacancies" />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                    <Field name="workHours">
+                        {({field, form}:any) => {
+                            return (
+                                <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1} >
+                                    <TimeRange name={field.name} />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                    <Field name="salaryRange">
+                        {({field}:any) => <SalaryRange name={field.name} />}
+                    </Field>
+                    <Field name="equityRange">
+                        {({field, form}:any) => {
+                            return (
+                                <Flex>
+                                    <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1}>
+                                        <Input {...field} value={field.value['start']} onChange={(e) => {form.setValues({...form.values, equityRange: {...form.values.equityRange, start:e.target.value}})}} placeholder="Lower ESOP Limit" type="number" rounded={'lg'} size={'sm'} />
+                                        <Text>-</Text>
+                                        <Input {...field} value={field.value['end']} onChange={(e) => {form.setValues({...form.values, equityRange: {...form.values.equityRange, end:e.target.value}})}} placeholder="Upper ESOP Limit" type="number" rounded={'lg'} size={'sm'} />    
+                                    </Flex>
+                                    <ErrorMessage name="equityRange" />
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                    <Field name="immediateJoining">
+                        {({field, form}:any) => {
+                            return (
+                                <Flex mt={4} gap={4} justifyContent={'end'} alignItems={'end'}>
+                                    <Box fontSize={'20px'} ><b>Immediate Joining</b></Box>
+                                    <Flex justifyContent={'center'} alignItems={'center'}>
+                                        <Switch {...field} id='immediate-joining' />
+                                    </Flex>
+                                </Flex>
+                            )
+                        }}
+                    </Field>
+                </Form>
+            </Formik>
         </Flex>
     </>)
 }
