@@ -25,3 +25,5 @@ yarn-error.log*
 .editorconfig
 .env
 .env.staging
+
+src/utils/form.constants.ts
