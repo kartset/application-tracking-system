@@ -1,13 +1,16 @@
 import {$generateHtmlFromNodes} from '@lexical/html';
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-
-const HtmlGeneratorPlugin = ({setHTML}) => {
-    const [editor] = useLexicalComposerContext();  
+const HtmlGeneratorPlugin = ({onChange, formFields}) => {
+    const [editor] = useLexicalComposerContext(); 
     editor.registerUpdateListener(() =>
       editor.update(() => {
-        console.log({aa:JSON.stringify($generateHtmlFromNodes(editor, null))})
-        setHTML(JSON.stringify($generateHtmlFromNodes(editor, null)))
+        const editorState = editor.getEditorState();
+        const json = editorState.toJSON();
+        onChange(json, JSON.stringify($generateHtmlFromNodes(editor, null)))
+        if(formFields && formFields.setValues) {
+            formFields.setValues({html:JSON.stringify($generateHtmlFromNodes(editor, null))})
+        }
       })
     );
   
