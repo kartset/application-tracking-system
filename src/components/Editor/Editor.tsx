@@ -4,7 +4,6 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
-import {OnChangePlugin} from '@lexical/react/LexicalOnChangePlugin';
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -23,6 +22,7 @@ import './Editor.css'
 import { $createLineBreakNode, $createParagraphNode, $createTextNode, $getRoot } from "lexical";
 import { $createListNode } from '@lexical/list'
 import HtmlGeneratorPlugin from "./plugins/HtmlGeneratorPlugin";
+import NodesGeneratorPlugin from "./plugins/NodesGeneratorPlugin";
 
 function Placeholder() {
     return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -75,9 +75,15 @@ const editorConfig = {
     ]
 };
 
-const Editor:React.FC<any> = (({setHTML}) => {
+const Editor:React.FC<any> = (({onChange, json, isFirstRender, setIsFirstRender, formFields}) => {
+
     return (
-        <LexicalComposer initialConfig={{...editorConfig, editorState: prepopulatedRichText}}>
+        <LexicalComposer 
+            initialConfig={{
+                ...editorConfig,
+                ...(isFirstRender && {editorState: prepopulatedRichText})
+            }}
+        >
             <div className="editor-container">
                 <ToolbarPlugin />
                 <div className="editor-inner">
@@ -86,11 +92,15 @@ const Editor:React.FC<any> = (({setHTML}) => {
                         placeholder= {<Placeholder />}
                         ErrorBoundary={LexicalErrorBoundary}
                     />
-                    <HtmlGeneratorPlugin setHTML={setHTML} />
+                    <HtmlGeneratorPlugin onChange={onChange} formFields={formFields} />
+                    <NodesGeneratorPlugin 
+                        initialJSON={json} 
+                        isFirstRender={isFirstRender}
+                        setIsFirstRender={setIsFirstRender}
+                    />
                     <HistoryPlugin />
                     <AutoFocusPlugin />
                     <CodeHighlightPlugin />
-                    <OnChangePlugin onChange={editorState => console.log({editorState})} />
                     <ListPlugin />
                     <LinkPlugin />
                     <AutoLinkPlugin />
