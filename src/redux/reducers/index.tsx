@@ -1,8 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import login from "./login/login";
+import vacancies from "./vacancies";
 
 let rootReducer = combineReducers({
-    login: login
+    login,
+    vacancies
 })
 
 export default rootReducer
