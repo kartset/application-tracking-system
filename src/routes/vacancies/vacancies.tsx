@@ -9,7 +9,6 @@ import {
     ModalBody, ModalFooter, useSteps, useToast, 
     Flex, Switch, Text, Checkbox, Tag, TagLabel, 
     TagRightIcon, ListItem, OrderedList, Stack, 
-    CheckboxGroup,
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
@@ -52,10 +51,15 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     const formTwoId = useId()
     const formThreeId = useId()
     const formFourId = useId()
+    const formFiveId = useId()
+    const formSixId = useId()
     const [currentFormId, setCurrentFormId] = useState(formOneId)
+    const [formData, setformData] = useState<any>({})
 
-    const onSubmitFinal = () => {
+    const onSubmitFinal = (values:any) => {
         console.log('on submit')
+        console.log({formData, values})
+        //send formData to backend with if make it public is true or false
         onClose()
         toast({
             title:'Success', 
@@ -70,10 +74,12 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     const onSubmit = (values:any) => {
         if(activeStep < steps.length-1) {
             setActiveStep(activeStep+1) 
-            console.log({values})
-            //send the form data to backend
+            setformData({
+                ...formData,
+                ...values
+            })
         } else {
-            onSubmitFinal()
+            onSubmitFinal(values)
             setActiveStep(activeStep+1)
         }
     }
@@ -83,15 +89,19 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     }, [isOpen])
 
     useEffect(() => {
-      if(activeStep === 0) {
-        setCurrentFormId(formOneId)
-      } if(activeStep === 1) {
-        setCurrentFormId(formTwoId)
-      } if(activeStep === 2) {
-        setCurrentFormId(formThreeId)
-      } if(activeStep === 3) {
-        setCurrentFormId(formFourId)
-      }
+        if(activeStep === 0) {
+            setCurrentFormId(formOneId)
+        } else if(activeStep === 1) {
+            setCurrentFormId(formTwoId)
+        } else if(activeStep === 2) {
+            setCurrentFormId(formThreeId)
+        } else if(activeStep === 3) {
+            setCurrentFormId(formFourId)
+        } else if(activeStep === 4) {
+            setCurrentFormId(formFiveId)
+        } else {
+            setCurrentFormId(formSixId)
+        }
     }, [activeStep])
     
     
@@ -109,19 +119,16 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                         : activeStep === 1 ? <JobPostFormTwo onSubmit={onSubmit} formId={formTwoId} /> 
                         : activeStep === 2 ? <JobsFormThree onSubmit={onSubmit} formId={formThreeId} /> 
                         : activeStep === 3 ? <JobsFormFour onSubmit={onSubmit} formId={formFourId} /> 
-                        : activeStep === 4 ? <JobsFormFive />
-                        : <JobsFormSix />
+                        : activeStep === 4 ? <JobsFormFive onSubmit={onSubmit} formId={formFiveId} />
+                        : <JobsFormSix onSubmit={onSubmit} formId={formSixId} />
                     }
                 </ModalBody>
                 <ModalFooter gap={3}>
                     <Button variant={'outline'} size={'sm'} colorScheme='blue'
                         onClick={() => {
-                            if(activeStep === 0) {
-                                onClose()
-                            } else {
-                                setActiveStep(activeStep-1)
-                            }
-                        } }
+                            if(activeStep === 0) { onClose()} 
+                            else { setActiveStep(activeStep-1)}
+                        }}
                     >
                         Back
                     </Button>
@@ -469,8 +476,8 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                                         />
                                         <Grid templateColumns='repeat(4, 1fr)' gap={2}>
                                             {skillsTagsChosen.map((skill:any, i:any) => (
-                                                <GridItem>
-                                                    <Tag size={'lg'} key={i} variant='subtle' colorScheme='cyan'>
+                                                <GridItem key={i} >
+                                                    <Tag size={'lg'} variant='subtle' colorScheme='cyan'>
                                                         <TagLabel>{toTitleCase(skill)}</TagLabel>
                                                         <TagRightIcon 
                                                             cursor={'pointer'} 
@@ -526,7 +533,7 @@ const JobsFormFour:React.FC<any> = ({onSubmit, formId}) => {
             <Formik
                 validationSchema={formFourSchema}
                 initialValues={initialValues}
-                onSubmit={(values) => {onSubmit(HTML)}}
+                onSubmit={() => {onSubmit({html:HTML})}}
             >
                 <Form id={formId} >
                     <Field name="html" >
@@ -551,8 +558,13 @@ const JobsFormFour:React.FC<any> = ({onSubmit, formId}) => {
     </>)
 }
 
-const JobsFormFive = () => {
-    const [questions, setQuestions] = useState<number>(2)
+const JobsFormFive:React.FC<any> = ({formId, onSubmit}) => {
+    const [questions, setQuestions] = useState<number>(1)
+
+    let formFiveSchema = Yup.object({ 
+        questions: Yup.array().min(1, "Required").required("Required") 
+    }) 
+    let initialValues = { questions: [""] }
 
     return (
         <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
@@ -560,30 +572,92 @@ const JobsFormFive = () => {
                 <Box fontSize={'20px'} ><b>Questions</b></Box>
                 <Box fontSize={'14px'} color={'#4C5A6D'} >A job title must describe one job post</Box>
             </Flex>
-            <Flex flex={1} gap={2} flexDirection={'column'} >
-                <OrderedList gap={2} mt={4}>
-                    {Array(questions).fill({}).map((a, i) =>{
-                        return(<ListItem key={i} mb={2} ><Input placeholder="Enter a Question" /></ListItem>)
-                    })}
-                </OrderedList>
-                <Flex>
-                    <Button onClick={() =>{setQuestions(questions+1)}} size={'sm'} colorScheme="blue" >Add New</Button>
-                </Flex>
-            </Flex>
+            <Formik
+                onSubmit={(values) => {onSubmit(values)}}
+                initialValues={initialValues}
+                validationSchema={formFiveSchema}
+            >
+                <Form id={formId} style={{display:'flex', flexDirection:'column', flex:1, gap:2,}} >
+                    <Field name="questions" >
+                        {({field, form}:any) => {
+                            return (<>
+                                <OrderedList gap={2} mt={4}>
+                                    {Array(questions).fill({}).map((a, i) =>{
+                                        return(
+                                            <ListItem key={i} mb={2} >
+                                                <Input {...field} value={form.values.questions[i]}
+                                                    onChange={(e) => {
+                                                        form.setValues({
+                                                            ...form.values, 
+                                                            questions: form.values.questions.map((q:string, index:number) => {
+                                                                if(index === i) return e.target.value
+                                                                else return q
+                                                            })
+                                                        })
+                                                    }} 
+                                                    placeholder="Enter a Question" 
+                                                />
+                                            </ListItem>
+                                        )
+                                    })}
+                                </OrderedList>
+                                <Flex>
+                                    <Button size={'sm'} colorScheme="blue" 
+                                        onClick={() =>{
+                                            setQuestions(questions+1)
+                                            form.setValues({...form.values, questions: [...form.values.questions, ""]})
+                                        }}
+                                    >
+                                        Add New
+                                    </Button>
+                                </Flex>
+                                <ErrorMessage name="questions" />
+                            </>)
+                        }}
+                    </Field>
+                </Form>
+            </Formik>
         </Flex>
     )
 }
 
-const JobsFormSix = () => {
-    const [value, setValue] = useState<(string | number)[]>(['1'])
+const JobsFormSix:React.FC<any> = ({onSubmit, formId}) => {
+    
+    const finalCheckboxes = [
+        {label: "Make it public", value:1, fieldName:'public'},
+        {label: "Share it using the link", value:2, fieldName:'shareUsingLink'},
+    ]
+    
+    let formSixSchema = Yup.object({ 
+        public: Yup.boolean().default(true),
+        shareUsingLink: Yup.boolean().default(true)
+    }) 
+    
+    let initialValues = { public: true, shareUsingLink:true }
+
     return (
         <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
-            <CheckboxGroup onChange={(value) => setValue(value)} value={value}>
-                <Stack direction='column'>
-                    <Checkbox value='1'>Make it public</Checkbox>
-                    <Checkbox value='2'>Share it using the link</Checkbox>
-                </Stack>
-            </CheckboxGroup>
+            <Formik
+                validationSchema={formSixSchema}
+                initialValues={initialValues}
+                onSubmit={(values) => onSubmit(values)}
+            >
+                <Form id={formId} >
+                    <Stack direction='column'>
+                        {finalCheckboxes.map((checkbox:any, i:any) => {
+                            return (
+                                <Field key={i} name={checkbox.fieldName} >
+                                    {({field, form}:any) => {
+                                        return (
+                                            <Checkbox {...field}>{checkbox.label}</Checkbox>
+                                        )
+                                    }}
+                                </Field>
+                            )
+                        })}
+                    </Stack>
+                </Form>
+            </Formik>
         </Flex>
     )
 }
