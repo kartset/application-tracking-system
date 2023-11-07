@@ -6,7 +6,7 @@ import Sidebar from "./sidebar"
 
 const AppWrapper = () => {
     return (
-        <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={605} bgColor={'#131215'}>
+        <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={637} bgColor={'#131215'}>
             <GridItem colSpan={2}>
                 <Sidebar />
             </GridItem>
