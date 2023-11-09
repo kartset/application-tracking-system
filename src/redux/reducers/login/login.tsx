@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-export interface CounterState {
+export interface initialStateProps {
     profile: any,
     user: any,
 }
 
-const initialState: CounterState = {
+const initialState:initialStateProps  = {
   profile: {},
   user: {}
 }
