@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { create } from 'apisauce'
 import { Button, Flex, Image, Text} from '@chakra-ui/react';
 import  ico from '../../assets/search.ico'
-import { setProfile, setUser } from '../../redux/reducers/login/login';
+import { setProfile, setUser } from '../../redux/reducers/login';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 

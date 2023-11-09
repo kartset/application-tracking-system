@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { googleLogout } from '@react-oauth/google';
-import { setProfile, setUser } from '../../redux/reducers/login/login';
+import { setProfile, setUser } from '../../redux/reducers/login';
 
 const Navbar = () => {
     const [scrolling, setScrolling] = useState(false);
