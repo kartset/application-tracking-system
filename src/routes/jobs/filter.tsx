@@ -1,47 +1,44 @@
 import { Box, Button, Checkbox, CheckboxGroup, Flex, Heading, Input } from "@chakra-ui/react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Loader } from '@googlemaps/js-api-loader'
+import { useSelector } from "react-redux"
+import { RootState } from "../../redux"
 
 
 
 const Filter = () => {
+    const { jobCategoriesArr, jobDepartmentsArr, jobsExperienceLevelArr } = useSelector((state:RootState) => state.jobs)
     return (
-      <Box mx="auto" px={8} py={4}  rounded="lg" shadow="lg" bgColor={'white'} style={{height:'fit-content', display:'flex', flexDirection:'column'}}>
-          <Flex mb={4} alignItems={'center'} justifyContent={'space-between'} flexDirection={'row'}>                    
-              <Heading as={'h2'} size={'sm'}>Filters</Heading>
-              <Button size={'xs'}>Clear All</Button>
-          </Flex>
-          <Flex mb={3} flexDirection={'column'}>
-              <Flex mb={3} flexDirection={'column'}>
-                  <Heading as={'h2'} size={'sm'} >Location</Heading>
-                  <LocationInput />
-              </Flex>
-              <Flex mb={3} flexDirection={'column'}>
-                  <Heading as={'h2'} size={'sm'} >Job Type</Heading>
-                  <CheckboxGroup colorScheme='green' defaultValue={[]}>
-                      <Checkbox value='naruto'>Naruto</Checkbox>
-                      <Checkbox value='sasuke'>Sasuke</Checkbox>
-                      <Checkbox value='kakashi'>Kakashi</Checkbox>
-                  </CheckboxGroup>
-              </Flex>
-              <Flex mb={3} flexDirection={'column'}>
-                  <Heading as={'h2'} size={'sm'} >Experience Level</Heading>
-                  <CheckboxGroup colorScheme='green' defaultValue={[]}>
-                      <Checkbox value='naruto'>Naruto</Checkbox>
-                      <Checkbox value='sasuke'>Sasuke</Checkbox>
-                      <Checkbox value='kakashi'>Kakashi</Checkbox>
-                  </CheckboxGroup>
-              </Flex>
-              <Flex mb={3} flexDirection={'column'}>
-                  <Heading as={'h2'} size={'sm'} >Department</Heading>
-                  <CheckboxGroup colorScheme='green' defaultValue={[]}>
-                      <Checkbox value='naruto'>Naruto</Checkbox>
-                      <Checkbox value='sasuke'>Sasuke</Checkbox>
-                      <Checkbox value='kakashi'>Kakashi</Checkbox>
-                  </CheckboxGroup>
-              </Flex>
-          </Flex>
-      </Box>
+        <Box mx="auto" px={8} py={4}  rounded="lg" shadow="lg" bgColor={'white'} style={{height:'fit-content', display:'flex', flexDirection:'column'}}>
+            <Flex mb={4} alignItems={'center'} justifyContent={'space-between'} flexDirection={'row'}>                    
+                <Heading as={'h2'} size={'sm'}>Filters</Heading>
+                <Button size={'xs'}>Clear All</Button>
+            </Flex>
+            <Flex mb={3} flexDirection={'column'}>
+                <Flex mb={3} flexDirection={'column'}>
+                    <Heading as={'h2'} size={'sm'} >Location</Heading>
+                    <LocationInput />
+                </Flex>
+                <Flex mb={3} flexDirection={'column'}>
+                    <Heading as={'h2'} size={'sm'} >Job Type</Heading>
+                    <CheckboxGroup colorScheme='green' defaultValue={[]}>
+                        {jobCategoriesArr.map(cat => (<Checkbox value={cat.toLowerCase()}>{cat}</Checkbox>))}
+                    </CheckboxGroup>
+                </Flex>
+                <Flex mb={3} flexDirection={'column'}>
+                    <Heading as={'h2'} size={'sm'} >Experience Level</Heading>
+                    <CheckboxGroup colorScheme='green' defaultValue={[]}>
+                        {jobsExperienceLevelArr.map(exp => (<Checkbox value={exp.toLowerCase()}>{exp}</Checkbox>))}
+                    </CheckboxGroup>
+                </Flex>
+                <Flex mb={3} flexDirection={'column'}>
+                    <Heading as={'h2'} size={'sm'} >Department</Heading>
+                    <CheckboxGroup colorScheme='green' defaultValue={[]}>
+                        {jobDepartmentsArr.map(dept => (<Checkbox value={dept.toLowerCase()}>{dept}</Checkbox>))}
+                    </CheckboxGroup>
+                </Flex>
+            </Flex>
+        </Box>
     )
 }
 
