@@ -1,4 +1,8 @@
 import { Box, Button, Checkbox, CheckboxGroup, Flex, Heading, Input } from "@chakra-ui/react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Loader } from '@googlemaps/js-api-loader'
+
+
 
 const Filter = () => {
     return (
@@ -10,7 +14,7 @@ const Filter = () => {
           <Flex mb={3} flexDirection={'column'}>
               <Flex mb={3} flexDirection={'column'}>
                   <Heading as={'h2'} size={'sm'} >Location</Heading>
-                  <Input size={'sm'} />
+                  <LocationInput />
               </Flex>
               <Flex mb={3} flexDirection={'column'}>
                   <Heading as={'h2'} size={'sm'} >Job Type</Heading>
@@ -40,5 +44,83 @@ const Filter = () => {
       </Box>
     )
 }
+
+const LocationInput = () => {
+
+    const isMounted = useRef(false)
+    const inputRef = useRef(null)
+    const [isLoaded, setLoaded] = useState(false)
+
+    const loader = useMemo(() => {
+        return new Loader({
+          id:'google-map-script',
+          libraries: ['places'],
+          apiKey: 'AIzaSyB3CeVhjj81B6cRb_32g1z-QbTFNKTuP14',
+          language: 'en',
+          region:  'US',
+          mapIds:  [],
+          nonce:  '',
+          authReferrerPolicy:  'origin',
+        })
+    }, [])
+
+    useEffect(function trackMountedState() {
+        isMounted.current = true
+        return (): void => {
+          isMounted.current = false
+        }
+    }, [])
+
+    
+    useEffect(() => {
+        if (isLoaded) {
+          return
+        } else {
+          loader.load().then(() => {
+            if (isMounted.current) {setLoaded(true)}
+            return
+          })
+          .catch((error) => {
+            console.log({error})
+          })
+        }
+    }, [isLoaded, loader])
+   
+    
+    useEffect(() => {
+       if(isLoaded) {
+            const autoComplete = new window.google.maps.places.Autocomplete(
+                (inputRef as any).current,
+            )
+            autoComplete.addListener('place_changed', () => {
+                const place = autoComplete.getPlace()
+                if (!place.geometry || !place.geometry.location) {
+                  // User entered the name of a Place that was not suggested and
+                  // pressed the Enter key, or the Place Details request failed.
+                    alert("this location not available")
+                } else {
+                    if (place.geometry.viewport || place.geometry.location) {
+                        // do something
+                        console.log(place.geometry.location)
+                    }
+                }
+            })
+       }
+        
+      
+    }, [isLoaded])
+    
+    return (
+        <div className="App">
+            <Input
+                size={'sm'}
+                placeholder=' Location'
+                borderRadius={'md'}
+                ref={inputRef}
+            />
+        </div>
+    )
+}
+
 
 export default Filter
