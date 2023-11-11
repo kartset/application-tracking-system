@@ -1,8 +1,8 @@
-import { Box } from "@chakra-ui/react"
+import { Box, filter } from "@chakra-ui/react"
 import Card from "../../components/card"
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initialJobs } from "../../redux/reducers/jobs";
+import { initialJobs, updateJobs } from "../../redux/reducers/jobs";
 import { RootState } from "../../redux";
 
 export interface jobProps {
@@ -11,16 +11,30 @@ export interface jobProps {
     jobType: string;
     jobArea: string;
     datePosted: Date;
+    jobLocation: string;
+    jobExperienceLevel: string;
 }
 
 const List = () => {
     
     const dispatch = useDispatch()
-    const { jobsList } = useSelector((state:RootState) => state.jobs)
+    const { jobsList, filters } = useSelector((state:RootState) => state.jobs)
     
     useEffect(() => {
         dispatch(initialJobs())    
     }, [])
+
+    useEffect(() => {
+        if(
+            (filters.location.length > 0) || 
+            (filters.jobDepartments.length > 0) ||
+            (filters.jobExperienceLevels.length > 0) ||
+            (filters.jobTypes.length > 0)
+        ) {
+            dispatch(updateJobs())
+        }
+    }, [filters])
+    
     
     return (
         <Box>
