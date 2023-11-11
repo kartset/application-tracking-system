@@ -22,6 +22,12 @@ const Card:React.FC<cardProps> = ({ jobData }) => {
                             px={3} mr={2} py={1} bg="gray.600" color="gray.100" fontSize="sm" 
                             fontWeight="700" rounded="md"  _hover={{ bg: "gray.500" }}
                         >
+                            {jobData.jobExperienceLevel}
+                        </Link>
+                        <Link
+                            px={3} mr={2} py={1} bg="gray.600" color="gray.100" fontSize="sm" 
+                            fontWeight="700" rounded="md"  _hover={{ bg: "gray.500" }}
+                        >
                             {jobData.jobType}
                         </Link>
                         <Link
