@@ -1,8 +1,8 @@
-import { Box, filter } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react"
 import Card from "../../components/card"
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initialJobs, updateJobs } from "../../redux/reducers/jobs";
+import { initialJobs, resetJobs, updateJobs } from "../../redux/reducers/jobs";
 import { RootState } from "../../redux";
 
 export interface jobProps {
@@ -32,6 +32,8 @@ const List = () => {
             (filters.jobTypes.length > 0)
         ) {
             dispatch(updateJobs())
+        } else {
+            dispatch(resetJobs())
         }
     }, [filters])
     

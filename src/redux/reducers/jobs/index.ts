@@ -4,6 +4,7 @@ import { jobProps } from '../../../routes/jobs/list';
 
 export interface initialStateProps {
     jobsList: jobProps[],
+    initialJobsList: jobProps[],
     jobCategoriesArr: string[],
     jobsExperienceLevelArr: string[],
     jobDepartmentsArr: string[],
@@ -41,6 +42,7 @@ const initialJobsList = [1,2,3,4,5,6,7,8,9,10].map(i => {
 
 
 const initialState: initialStateProps = {
+    initialJobsList:initialJobsList,
     jobsList: initialJobsList,
     jobCategoriesArr: [],
     jobsExperienceLevelArr: ['Fresher', 'Associate', 'Senior', 'Executive', 'Advisory'],
@@ -55,15 +57,13 @@ export const jobsSlice = createSlice({
   reducers: {
     
     initialJobs: (state) => {
-        state.jobsList = state.jobsList.sort((d1, d2) => new Date(d1.datePosted).getTime() - new Date(d2.datePosted).getTime())
+        state.jobsList = state.initialJobsList.sort((d1, d2) => new Date(d1.datePosted).getTime() - new Date(d2.datePosted).getTime())
         state.jobCategoriesArr = [...new Set(state.jobsList.map(job => {
             return job.jobType
         }))]
         state.jobDepartmentsArr = [...new Set(state.jobsList.map(job => {
             return job.jobArea
         }))]
-
-        console.log({initialJobsList})
     },
     
     updateFilter: (state, payload) => {
@@ -75,7 +75,7 @@ export const jobsSlice = createSlice({
 
     resetFilter:( state ) => {
         state.filters = initialFilter
-        state.jobsList = initialJobsList.sort((d1, d2) => new Date(d1.datePosted).getTime() - new Date(d2.datePosted).getTime())
+        state.jobsList = state.initialJobsList.sort((d1, d2) => d1.datePosted.getTime() - d2.datePosted.getTime())
     },
 
     updateJobs: (state) => {
@@ -92,12 +92,16 @@ export const jobsSlice = createSlice({
                 
             }
         })
+    },
+
+    resetJobs: (state) => {
+        state.jobsList = state.initialJobsList
     }
 
   },
   extraReducers: (builder) => {}
 })
 
-export const { initialJobs, updateFilter, resetFilter, updateJobs } = jobsSlice.actions
+export const { resetJobs, initialJobs, updateFilter, resetFilter, updateJobs } = jobsSlice.actions
 
 export default jobsSlice.reducer
