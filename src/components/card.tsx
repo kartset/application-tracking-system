@@ -15,7 +15,7 @@ const Card:React.FC<cardProps> = ({ jobData }) => {
             <Box mx="auto" px={8} py={4} rounded="lg" shadow="lg" bg="white" _dark={{ bg: "gray.800"}}>
                 <Flex justifyContent="space-between" alignItems="center">
                     <chakra.span fontSize="sm" color="gray.600" _dark={{ color: "gray.400"}}>
-                        {jobData.datePosted.toString().split(' ').splice(1,3).join(' ')}
+                        {jobData.datePosted}
                     </chakra.span>
                     <Flex>
                         <Link

@@ -10,7 +10,7 @@ export interface jobProps {
     jobTitle: string;
     jobType: string;
     jobArea: string;
-    datePosted: Date;
+    datePosted: string;
     jobLocation: string;
     jobExperienceLevel: string;
 }

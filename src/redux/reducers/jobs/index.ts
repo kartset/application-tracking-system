@@ -33,7 +33,7 @@ const initialJobsList = [1,2,3,4,5,6,7,8,9,10].map(i => {
         jobTitle: faker.person.jobTitle(),
         jobType: faker.person.jobType(),
         jobArea: faker.person.jobArea(),
-        datePosted: faker.date.between({ from: '2023-01-01T00:00:00.000Z', to: (new Date()).toISOString()}),
+        datePosted: faker.date.between({ from: '2023-01-01T00:00:00.000Z', to: (new Date()).toISOString()}).toString().split(' ').splice(1,3).join(' '),
         jobLocation: faker.location.city(),
         jobExperienceLevel: jobExperienceLevels[Math.floor(Math.random()*jobExperienceLevels.length)]
 
@@ -75,7 +75,7 @@ export const jobsSlice = createSlice({
 
     resetFilter:( state ) => {
         state.filters = initialFilter
-        state.jobsList = state.initialJobsList.sort((d1, d2) => d1.datePosted.getTime() - d2.datePosted.getTime())
+        state.jobsList = state.initialJobsList.sort((d1, d2) => new Date(d1.datePosted).getTime() - new Date(d2.datePosted).getTime())
     },
 
     updateJobs: (state) => {
