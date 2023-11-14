@@ -8,7 +8,7 @@ input[type=file] {
     border: 1px solid #555;
   }
 
-input[type=file]::file-selector-button {
+  .button {
     margin-right: 20px;
     border: none;
     background: #084cdf;
@@ -19,9 +19,16 @@ input[type=file]::file-selector-button {
     transition: background .2s ease-in-out;
   }
   
-  input[type=file]::file-selector-button:hover {
-    background: #0d45a5;
+  .file-input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
   }
+  
 
   .drop-container {
     position: relative;

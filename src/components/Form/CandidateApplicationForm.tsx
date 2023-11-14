@@ -1,49 +1,79 @@
 import {
     Box, Button, Flex, Grid, GridItem, 
-    useSteps, FormControl,FormLabel, Input,
+    useSteps, FormControl,FormLabel, Input, Text,
 } from '@chakra-ui/react'
 import './form.css'
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { useToast } from '@chakra-ui/react'
 import SteppperWrapper from '../Stepper'
+import * as Yup from 'yup';
+import { ErrorMessage, Field, Form, Formik } from 'formik'
+import { truncate } from '../../utils/helpers'
+
 
 const count = 1
 const formats = ['doc', 'docx', 'pdf']
 
-const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
+const CandidateApplicationForm:React.FC<any> = ({isOpen, onClose}) => {
     const steps = [ { title: 'Resume'}, { title: 'Contact'}, { title: 'Documents'}]
     const { activeStep, setActiveStep } = useSteps({index: 0, count: steps.length})
     const toast = useToast()
+    const formOneId = useId()
+    const formTwoId = useId()
+    const formThreeId = useId()
+    const [currentFormId, setCurrentFormId] = useState(formOneId)
 
     const onSubmit = () => {
-        console.log('on submit')
-        onClose()
-        toast({title:'Success', status:'success', position:'top-right', description:'Application Submitted Successfully', isClosable:true, duration:1500})
+        if(activeStep < steps.length-1) {
+            setActiveStep(activeStep+1)
+        } else {
+            setActiveStep(activeStep+1)
+            onClose()
+            toast({
+                title:'Success', 
+                status:'success',
+                position:'top-right', 
+                description:'Application Submitted Successfully', 
+                isClosable:true, 
+                duration:1500
+            })
+        }
     }
 
+    useEffect(() => {
+        setActiveStep(0)
+    }, [isOpen])
+
+    useEffect(() => {
+        if(activeStep === 0) {
+            setCurrentFormId(formOneId)
+        } else if(activeStep === 1) {
+            setCurrentFormId(formTwoId)
+        } else if(activeStep === 2) {
+            setCurrentFormId(formThreeId)
+        }
+    }, [activeStep])
+
     return (<>
-        <SteppperWrapper steps={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
+        <SteppperWrapper 
+            steps={steps}  
+            activeStep={activeStep} 
+            setActiveStep={setActiveStep} 
+        />
         
         {
-            activeStep === 0 ?  <ResumeForm /> 
+            activeStep === 0 ?  <ResumeForm formId={formOneId} onSubmit={onSubmit} /> 
             :   activeStep === 1 ?  <ApplicantDetailsForm /> 
             :   activeStep === 2 ?  <DocumentsUploadForm /> 
             :   <></> 
         }
        
         <Flex justifyContent={'end'}>
-            <Button 
+            <Button
+                type='submit'
+                form={currentFormId}
                 size={'sm'} 
                 colorScheme="blue" 
-                onClick={() => {
-                    if(activeStep < steps.length-1) {
-                        setActiveStep(activeStep+1) 
-                    } else {
-                        
-                        setActiveStep(activeStep+1)
-                        onSubmit()
-                    }
-                } }
             >
                 {activeStep < steps.length-1 ? 'Next' : 'Submit'}
             </Button>
@@ -52,32 +82,29 @@ const CandidateApplicationForm:React.FC<any> = ({onClose}) => {
 }
 
 
-const ResumeForm = () => {
+const ResumeForm = ({formId, onSubmit}:any) => {
     const drop = useRef<any>(null);
     const toast = useToast()
 
-    useEffect(() => {
-        let dropCurrentCopy = drop.current
-        drop.current.addEventListener('dragover', handleDragOver);
-        drop.current.addEventListener('drop', handleDrop);
+    let formSchema = Yup.object({
+        resume: Yup.mixed().required('File is required'),        
+    })
 
-        return () => {
-            dropCurrentCopy.removeEventListener('dragover', handleDragOver);
-            dropCurrentCopy.removeEventListener('drop', handleDrop);
-        };
-    });
+    let initialValues = {
+        resume: undefined
+    }
 
     const onUpload = (files:File[]) => {
         console.log(files);
     };
       
-    const handleDragOver = (e: DragEvent) => {
+    const handleDragOver = (e:any) => {
         e.preventDefault();
         e.stopPropagation();
         drop.current.classList.add("drag-active")
     };
 
-    const handleDrop = (e: DragEvent) => {
+    const handleDrop = (e:any, form:any) => {
         e.preventDefault();
         e.stopPropagation();
         drop.current.classList.remove("drag-active")
@@ -112,16 +139,65 @@ const ResumeForm = () => {
                 duration:1000
             });
             onUpload(files);
+            form.setValues({resume:files})
         }
 
         onUpload(files);
     };
+    
     return (
-        <Box ref={drop} className="drop-container" id="dropcontainer" mt={4} mb={4}>
-            <label className="drop-title">Drop resume here</label>
-                or
-            <input type="file" id="resume_file" accept=".doc,.docx,.pdf,application/msword" required />
-        </Box>
+        <Formik
+            initialValues={initialValues}
+            validationSchema={formSchema}
+            onSubmit={(values) =>  {console.log({values});onSubmit()}} 
+        >
+            <Form id={formId}>
+                <Field name="resume" >
+                    {({field, form}:any) => {
+                        return (
+                            <Box 
+                                ref={drop} 
+                                className="drop-container" 
+                                id="dropcontainer" 
+                                mt={4} mb={4}
+                                onDragOverCapture={(e) => {handleDragOver(e)}}
+                                onDropCapture={(e) => {handleDrop(e, form)}}
+                            >
+                                <label className='drop-title'>Drop resume here</label> or
+                                <Flex
+                                    style={{
+                                        justifyContent:'start', width:'50%', alignItems:'center', 
+                                        border:'1px solid black', borderRadius:'10px', padding:'4px', 
+                                        paddingTop:'6px', paddingBottom:'6px', backgroundColor:'white' 
+                                    }} 
+                                >
+                                    <label className="button">Choose File</label>
+                                    <input
+                                        type="file"
+                                        className="file-input" 
+                                        id="resume_file" 
+                                        accept=".doc,.docx,.pdf,application/msword"
+                                        multiple={false}
+                                        onChange={(e) => {
+                                            form.setValues({resume:e.target.files})
+                                        }}
+                                    />
+                                    <Text style={{fontSize:'16px'}}>
+                                        {
+                                            form.values.resume && form.values.resume.length > 0 ? 
+                                            truncate(form.values.resume[0].name, 20, '...') 
+                                            :   'No file chosen'
+                                        }
+                                    </Text>
+                                </Flex>
+                                <ErrorMessage name="resume" />
+                            </Box>
+
+                        )
+                    }}
+                </Field>
+            </Form>
+        </Formik>
     )
 }
 

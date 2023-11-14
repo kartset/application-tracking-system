@@ -37,7 +37,7 @@ export const ApplyModal:React.FC<any> = ({modalTitle, isOpen, onClose}) => {
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <CandidateApplicationForm onClose={onClose} />
+                    <CandidateApplicationForm isOpen={isOpen} onClose={onClose} />
                 </ModalBody>
             </ModalContent>
         </Modal>
