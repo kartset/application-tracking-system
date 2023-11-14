@@ -63,7 +63,7 @@ const CandidateApplicationForm:React.FC<any> = ({isOpen, onClose}) => {
         
         {
             activeStep === 0 ?  <ResumeForm formId={formOneId} onSubmit={onSubmit} /> 
-            :   activeStep === 1 ?  <ApplicantDetailsForm /> 
+            :   activeStep === 1 ?  <ApplicantDetailsForm formId={formTwoId} onSubmit={onSubmit} /> 
             :   activeStep === 2 ?  <DocumentsUploadForm /> 
             :   <></> 
         }
@@ -202,54 +202,134 @@ const ResumeForm = ({formId, onSubmit}:any) => {
 }
 
 
-const ApplicantDetailsForm = () => {
+const ApplicantDetailsForm = ({formId, onSubmit}:any) => {
+    let formSchema = Yup.object({
+        firstName: Yup.string().required('First Name is Required !!'),
+        lastName: Yup.string().required('Last Name is required'),
+        contact: Yup.string().length(10).required("Contact is Required"),
+        email: Yup.string().email().required("Email is Required"),
+        aadhaar: Yup.string().length(12).required("Aadhaar Number is required"),
+        pan: Yup.string().length(10).required("PAN is required"),
+        address: Yup.string().required("Address is required")
+    })
+
+    let initialValues = {
+        firstName: '',
+        lastName: '',
+        contact: '',
+        email: '',
+        aadhaar: '',
+        pan: '',
+        address: ''
+    }
     return (
-        <form id='applicantDetailsForm' onSubmit={(e) => {e.preventDefault()}}>
-            <Grid mt={2} gap={4} templateColumns='repeat(2, 1fr)'>
-                <GridItem mb={2} colSpan={1} id="firstName">
-                    <FormControl isRequired>
-                        <FormLabel>First Name</FormLabel>
-                        <Input type='text' placeholder='Enter First Name' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-                <GridItem mb={2} colSpan={1} id="lastName">
-                    <FormControl isRequired>
-                        <FormLabel>Last Name</FormLabel>
-                        <Input type='text' placeholder='Enter Last Name' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-                <GridItem mb={2} colSpan={1} id="contact">
-                    <FormControl isRequired>
-                        <FormLabel>Contact</FormLabel>
-                        <Input type='tel' placeholder='Enter Contact Number' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-                <GridItem mb={2} colSpan={1} id="email">
-                    <FormControl isRequired>
-                        <FormLabel>Email</FormLabel>
-                        <Input type='email' placeholder='Enter Email' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-                <GridItem mb={2} colSpan={1} id="aadhaar">
-                    <FormControl isRequired>
-                        <FormLabel>Aadhaar Number</FormLabel>
-                        <Input type='number' placeholder='Enter Aadhaar Number' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-                <GridItem mb={2} colSpan={1} id="pan">
-                    <FormControl isRequired>
-                        <FormLabel>PAN</FormLabel>
-                        <Input type='text' placeholder='Enter PAN' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-                <GridItem mb={2} colSpan={2} id="address">
-                    <FormControl isRequired>
-                        <FormLabel>Address</FormLabel>
-                        <Input type='text' placeholder='Enter Address' rounded={'lg'} size={'sm'} />
-                    </FormControl>
-                </GridItem>
-            </Grid>
-        </form>
+        <Formik
+            initialValues={initialValues}
+            validationSchema={formSchema}
+            onSubmit={(values) =>  {console.log({values});onSubmit()}}
+        >
+            <Form id={formId}>
+                <Grid mt={2} gap={4} templateColumns='repeat(2, 1fr)'>
+                    <Field name="firstName">
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>
+                                    <FormLabel>First Name</FormLabel>
+                                    <Input 
+                                        {...field} 
+                                        placeholder='Enter First Name' 
+                                        rounded={'lg'} size={'sm'} 
+                                    />
+                                    <ErrorMessage name="firstName" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name="lastName" >
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>
+                                    <FormLabel>Last Name</FormLabel>
+                                    <Input 
+                                        {...field} 
+                                        placeholder='Enter Last Name' 
+                                        rounded={'lg'} size={'sm'} 
+                                    />
+                                    <ErrorMessage name="lastName" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name='contact' >
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>
+                                    <FormLabel>Contact</FormLabel>
+                                    <Input 
+                                        {...field}  
+                                        placeholder='Enter Contact Number' 
+                                        rounded={'lg'} size={'sm'} 
+                                    />
+                                    <ErrorMessage name="contact" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name='email'>
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>
+                                    <FormLabel>Email</FormLabel>
+                                    <Input 
+                                        {...field} 
+                                        placeholder='Enter Email' 
+                                        rounded={'lg'} size={'sm'} 
+                                    />
+                                    <ErrorMessage name="email" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name="aadhaar">
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>                                    
+                                    <FormLabel>Aadhaar Number</FormLabel>
+                                    <Input 
+                                        {...field} 
+                                        placeholder='Enter Aadhaar Number' 
+                                        rounded={'lg'} size={'sm'} 
+                                    />
+                                    <ErrorMessage name="aadhaar" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name="pan" >
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>
+                                    <FormLabel>PAN</FormLabel>
+                                    <Input {...field} placeholder='Enter PAN' rounded={'lg'} size={'sm'} />
+                                    <ErrorMessage name="pan" />
+                                </GridItem>   
+                            )
+                        }}
+                    </Field>
+                    <Field name="address" >
+                        {({field}:any) => {
+                            return (
+                                <GridItem mb={2} colSpan={1}>
+                                    <FormLabel>Address</FormLabel>
+                                    <Input {...field} type='text' placeholder='Enter Address' rounded={'lg'} size={'sm'} />
+                                    <ErrorMessage name="address" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                </Grid>
+            </Form>
+        </Formik>
     )
 }
 
