@@ -70,7 +70,7 @@ export const Login = () => {
     }
 
     return (
-        <div className="App">
+        <div className="app-login">
             <div className="card">
                 <Box fontSize={'25px'} fontWeight={'extrabold'} mt={4} >Welcome</Box>
                 <Box mt={4} className='brand'>AT-System</Box>
