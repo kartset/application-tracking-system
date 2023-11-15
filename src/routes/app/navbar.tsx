@@ -1,10 +1,22 @@
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { Avatar, AvatarBadge, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Grid, GridItem, Link, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react"
 import img from '../../assets/bell.png'
+import { useNavigate } from "react-router-dom"
 
 const url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTewPdubiwZ-wA40RGuCnUu-IBIkj3iSCGGd6s5Hf7Q&s'
 
 const Navbar = () => {
+
+    const navigate = useNavigate()
+
+    const logout = () => {
+        if(localStorage.getItem('user')) {
+            localStorage.removeItem('user')
+            navigate('/app')
+            window.location.reload()
+        }
+    }
+
     return (
         <Grid height={'-webkit-fill-available'} templateColumns='repeat(12, 1fr)' >
             <GridItem pl={4} as={'div'} style={{paddingTop:'5px', alignSelf:'center'}} colSpan={10}>
@@ -30,7 +42,7 @@ const Navbar = () => {
                     <MenuList>
                         <MenuItem>Profile</MenuItem>
                         <MenuItem>Settings</MenuItem>
-                        <MenuItem>Logout</MenuItem>
+                        <MenuItem onClick={() => {logout()}} >Logout</MenuItem>
                     </MenuList>
                 </Menu>
             </GridItem>
