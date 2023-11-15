@@ -64,7 +64,7 @@ const CandidateApplicationForm:React.FC<any> = ({isOpen, onClose}) => {
         {
             activeStep === 0 ?  <ResumeForm formId={formOneId} onSubmit={onSubmit} /> 
             :   activeStep === 1 ?  <ApplicantDetailsForm formId={formTwoId} onSubmit={onSubmit} /> 
-            :   activeStep === 2 ?  <DocumentsUploadForm /> 
+            :   activeStep === 2 ?  <DocumentsUploadForm formId={formThreeId} onSubmit={onSubmit} /> 
             :   <></> 
         }
        
@@ -333,34 +333,76 @@ const ApplicantDetailsForm = ({formId, onSubmit}:any) => {
     )
 }
 
-const DocumentsUploadForm = () => {
+const DocumentsUploadForm = ({formId, onSubmit}:any) => {
+    const formSchema = Yup.object({
+        aadhaarFront: Yup.mixed().required('Required'),
+        aadhaarBack: Yup.mixed().required('Required'),
+        panFront: Yup.mixed().required('Required'),
+        panBack: Yup.mixed().required('Required')
+    })
+
+    const initialValues = {
+        aadhaarFront: undefined,
+        aadhaarBack: undefined,
+        panFront: undefined,
+        panBack: undefined
+    }
     return (
-        <Grid gap={4} templateColumns='repeat(2, 1fr)'>
-            <GridItem mt={2} mb={2} colSpan={1} id="aadhaarFront">
-                <FormControl isRequired>
-                    <FormLabel>Addhaar Front Photo</FormLabel>
-                    <input type='file' />
-                </FormControl>
-            </GridItem>
-            <GridItem mt={2} mb={2} colSpan={1} id="aadhaarBack">
-                <FormControl isRequired>
-                    <FormLabel>Addhaar Back Photo</FormLabel>
-                    <input type='file' />
-                </FormControl>
-            </GridItem>
-            <GridItem mt={2} mb={2} colSpan={1} id="panFront">
-                <FormControl isRequired>
-                    <FormLabel>PAN Front Photo</FormLabel>
-                    <input type='file' />
-                </FormControl>
-            </GridItem>
-            <GridItem mt={2} mb={2} colSpan={1} id="panBack">
-                <FormControl isRequired>
-                    <FormLabel>PAN Back Photo</FormLabel>
-                    <input type='file' />
-                </FormControl>
-            </GridItem>
-        </Grid>
+        <Formik
+            validationSchema={formSchema}
+            initialValues={initialValues}
+            onSubmit={(values) => {console.log({values});onSubmit()}}
+        >
+            <Form id={formId}>
+                <Grid gap={4} templateColumns='repeat(2, 1fr)'>
+                    <Field name="aadhaarFront" >
+                        {({form}:any) => {
+                            return (
+                                <GridItem mt={2} mb={2} colSpan={1}>
+                                    <FormLabel>Addhaar Front Photo</FormLabel>
+                                    <Input type='file' onChange={(e) => { form.setFieldValue('aadhaarFront', e.target.files) }} />
+                                    <ErrorMessage name="aadhaarFront" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name="aadhaarBack">
+                        {({form}:any) => {
+                            return (
+                                <GridItem mt={2} mb={2} colSpan={1}>
+                                    <FormLabel>Addhaar Back Photo</FormLabel>
+                                    <Input type='file' onChange={(e) => { form.setFieldValue('aadhaarBack', e.target.files) }} />
+                                    <ErrorMessage name="aadhaarBack" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name="panFront">
+                        {({form}:any) => {
+                            return (
+                                <GridItem mt={2} mb={2} colSpan={1}>
+                                    <FormLabel>PAN Front Photo</FormLabel>
+                                    <Input type='file' onChange={(e) => { form.setFieldValue('panFront', e.target.files) }} />
+                                    <ErrorMessage name="panFront" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                    <Field name="panBack" >
+                        {({form}:any) => {
+                            return (
+                                <GridItem mt={2} mb={2} colSpan={1}>
+                                    <FormLabel>PAN Back Photo</FormLabel>
+                                    <Input type='file' onChange={(e) => { form.setFieldValue('panBack', e.target.files) }} />
+                                    <ErrorMessage name="panBack" />
+                                </GridItem>
+                            )
+                        }}
+                    </Field>
+                </Grid>
+            </Form>
+        </Formik>
+        
     )
 }
 
