@@ -1,25 +1,122 @@
-import { Grid, GridItem,} from "@chakra-ui/react"
-import { Outlet } from "react-router-dom"
+import { Box, Button, Flex, Grid, GridItem, Input,} from "@chakra-ui/react"
+import { Outlet, useNavigate } from "react-router-dom"
 import Navbar from "./navbar"
 import Sidebar from "./sidebar"
+import './style.css'
+import * as Yup from 'yup'
+import { ErrorMessage, Field, Form, Formik } from "formik"
+import { useEffect, useId } from "react"
+import { getUser } from "../../redux/reducers/appLogin"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../redux"
+import { faker } from "@faker-js/faker"
 
 
-const AppWrapper = () => {
+const Layout = () => {
+
+    const { user } = useSelector((state:RootState) => state.appLogin)
+    const dispatch = useDispatch()
+    
+    useEffect(() => {
+        dispatch(getUser())
+    }, [])
+    
     return (
-        <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={637} bgColor={'#131215'}>
-            <GridItem colSpan={2}>
-                <Sidebar />
-            </GridItem>
-            <GridItem rounded={'2xl'} colSpan={10}>
-                <Grid rounded={'2xl'} height={593} templateRows='repeat(22, 1fr)' mt={1} mb={2} mr={2} bgColor={'#F8F8FF'} >
-                    <GridItem style={{borderTopLeftRadius:'1rem', borderTopRightRadius:'1rem', boxShadow: '0 0px 0px rgba(0, 0, 0, 0.2)'}} backgroundColor={'white'} rowSpan={2}>
-                        <Navbar />
-                    </GridItem>
-                    <Outlet />
-                </Grid>
-            </GridItem>
-        </Grid>
+        Object.keys(user).length > 0 ?
+            <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={637} bgColor={'#131215'}>
+                <GridItem colSpan={2}>
+                    <Sidebar />
+                </GridItem>
+                <GridItem rounded={'2xl'} colSpan={10}>
+                    <Grid rounded={'2xl'} height={593} templateRows='repeat(22, 1fr)' mt={1} mb={2} mr={2} bgColor={'#F8F8FF'} >
+                        <GridItem style={{borderTopLeftRadius:'1rem', borderTopRightRadius:'1rem', boxShadow: '0 0px 0px rgba(0, 0, 0, 0.2)'}} backgroundColor={'white'} rowSpan={2}>
+                            <Navbar />
+                        </GridItem>
+                        <Outlet />
+                    </Grid>
+                </GridItem>
+            </Grid>
+        :   <Login />
+        
     )
 }
 
-export default AppWrapper
+export const Login = () => {
+
+    const formSchema = Yup.object({
+        username: Yup.string().required('Username or Email is required'),
+        password: Yup.string().required('Password is Required')
+    })
+
+    const initialValues = {
+        username: '',
+        password: ''
+    }
+
+    const formId = useId()
+
+    const navigate = useNavigate()
+
+    const onSubmit = (values:{username:string, password:string}) => {
+        localStorage.setItem('user', JSON.stringify({
+            username: values.username,
+            name: faker.person.fullName(),
+            age: faker.person.bio(),
+            email: values.username.includes('@') ? values.username : faker.internet.email(),
+
+        }))
+        navigate('/app/vacancies')
+        window.location.reload()
+    }
+
+    return (
+        <div className="App">
+            <div className="card">
+                <Box fontSize={'25px'} fontWeight={'extrabold'} mt={4} >Welcome</Box>
+                <Box mt={4} className='brand'>AT-System</Box>
+                <Formik
+                    validationSchema={formSchema}
+                    initialValues={initialValues}
+                    onSubmit={(values) => {onSubmit(values)} }
+                >
+                    <Form id={formId} >
+                        <Field name="username" >
+                            {({field}:any) => {
+                                return (
+                                    <Flex mt={4} flexDirection={'column'} >
+                                        <Input
+                                            {...field}
+                                            variant={'flushed'}
+                                            placeholder="Email or Username" 
+                                        />
+                                        <ErrorMessage name="username" />
+                                    </Flex>
+                                )
+                            }}
+                        </Field>
+                        <Field name="password" >
+                            {({field}:any) => {
+                                return (
+                                    <Flex mt={4} flexDirection={'column'} >
+                                        <Input 
+                                            {...field}
+                                            variant={'flushed'}
+                                            placeholder="Type Password" 
+                                            type="password"
+                                        />
+                                        <ErrorMessage name="password" />
+                                    </Flex>
+                                )
+                            }}
+                        </Field>                        
+                    </Form>
+                </Formik>
+                <Button colorScheme='blue' mt={4} mb={4} form={formId} type="submit">
+                    Login
+                </Button>
+            </div>
+        </div>
+    )
+}
+
+export default Layout
