@@ -1,15 +1,16 @@
 import { Flex, Grid, GridItem, Image, Text } from "@chakra-ui/react"
-import dash from '../../assets/blue.png'
-import check from '../../assets/check.png'
-import people from '../../assets/youth.png'
-import clock from '../../assets/wall-clock.png'
-import chat from '../../assets/chat.png'
-// import link from '../../assets/link.png'
+import { activeLinkStyle, bottomBarStyle, linkStyle, navItems } from "./data"
+import { Link, useLocation } from "react-router-dom"
+import { motion } from "framer-motion";
+import { useState } from "react";
+
 
 const url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTewPdubiwZ-wA40RGuCnUu-IBIkj3iSCGGd6s5Hf7Q&s'
 
-
 const Sidebar = () => {
+    let location = useLocation()
+    let pathname = location.pathname || "/";
+    const [hoveredPath, setHoveredPath] = useState(pathname);
     return (
         <Grid height={593} templateRows='repeat(17, 1fr)' >
             <GridItem style={{display:'flex', alignItems:'center', justifyContent:'center'}} className={"brand text-scrolled"} rowSpan={2} >AT-System</GridItem>
@@ -20,35 +21,61 @@ const Sidebar = () => {
                 <Text>Kartik Setia</Text>
                 <Text color={'#606267'} >kartset10@gmail.com</Text>
             </GridItem>
-            <GridItem gap={3} style={{display:'flex', flexDirection:'column', alignItems:'center'}} fontSize={'14px'} color={'white'} rowSpan={10}>
-                <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={dash} />
-                    <Text ml={3} fontSize={'19px'}>Dashboard</Text>
-                </Flex>
-                <Flex bgColor={'#2A2B2D'} p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={check} />
-                    <Text  ml={3} fontSize={'19px'}>Vacancies</Text>
-                </Flex>
-                <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={people} />
-                    <Text ml={3} fontSize={'19px'}>Candidates</Text>
-                </Flex>
-                <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={clock} />
-                    <Text ml={3} fontSize={'19px'}>Schedules</Text>
-                </Flex>
-                <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={people} />
-                    <Text ml={3} fontSize={'19px'}>Employess</Text>
-                </Flex>
-                <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={chat} />
-                    <Text ml={3} fontSize={'19px'}>Chat</Text>
-                </Flex>
-                {/* <Flex p={2} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'} >
-                    <Image boxSize='20px' src={link} />
-                    <Text ml={3} fontSize={'19px'}>Connected Apps</Text>
-                </Flex> */}
+            <GridItem 
+                // gap={3} 
+                style={{
+                    display:'flex', flexDirection:'column', alignItems:'center',
+                    justifyContent: 'flex-start',width: '100%',borderRadius: '0.4rem',                      
+                }} 
+                fontSize={'14px'} 
+                color={'white'} 
+                rowSpan={10}
+            >
+                {navItems.map(item => { 
+                    const isActive = item.path === pathname;
+                    return (                          
+                        <Link
+                            onMouseOver={() => setHoveredPath(item.path) }
+                            onMouseLeave={() => setHoveredPath(pathname)} 
+                            key={item.path}
+                            {...(item.newTab && {target:"_blank"})} 
+                            data-active={isActive}
+                            style={{
+                                padding:'8px',
+                                position:'relative',
+                                paddingLeft:'16px', width:'80%',
+                                ...linkStyle,
+                                ...(isActive ? activeLinkStyle : {}),
+                              }}
+                            to={item.path}
+                        >
+                            {item.path  === hoveredPath ? (
+                                <motion.div
+                                    style={{
+                                        display:'flex',
+                                        flexDirection:'row',
+                                        ...bottomBarStyle,
+                                        width:'100%'
+                                    }}
+                                    transition={{
+                                        type: "spring",
+                                        bounce: 0.25,
+                                        stiffness: 130,
+                                        damping: 9,
+                                        duration: 0.3,
+                                    }}
+                                >
+                                    <Image boxSize='20px' src={item.img} />
+                                    <Text ml={3} fontSize={'19px'} >{item.name}</Text>
+                                </motion.div>
+                            ) : <Flex p={1} pl={4} width={'80%'} justifyContent={'start'} borderRadius={'10px'} alignItems={'center'}>
+                                    <Image boxSize='20px' src={item.img} />
+                                    <Text ml={3} fontSize={'19px'} >{item.name}</Text>
+                                </Flex>
+                            }
+                        </Link>
+                    )
+                })}
             </GridItem>
         </Grid>
     ) 
