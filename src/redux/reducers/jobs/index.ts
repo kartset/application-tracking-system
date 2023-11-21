@@ -1,6 +1,7 @@
 import { createSlice, current } from '@reduxjs/toolkit'
 import { faker } from '@faker-js/faker';
 import { jobProps } from '../../../routes/jobs/list';
+import { jobExperienceLevels } from '../../../utils/constants';
 
 export interface initialStateProps {
     jobsList: jobProps[],
@@ -25,7 +26,6 @@ const initialFilter = {
     jobDepartments: [],
 }
 
-const jobExperienceLevels = ['Fresher', 'Associate', 'Senior', 'Executive', 'Advisory']
 
 const initialJobsList = [1,2,3,4,5,6,7,8,9,10].map(i => {
     return {

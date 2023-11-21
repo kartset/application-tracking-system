@@ -25,13 +25,22 @@ import { toTitleCase } from "../../utils/helpers"
 import { CustomTabs } from "../../components/Tabs"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../redux"
-import { setHTML, setJSON } from "../../redux/reducers/vacancies"
+import { initializeVacancies, setHTML, setJSON } from "../../redux/reducers/vacancies"
+import { tableColumns } from "./data"
 
 const steps = Array(6).fill({ title: '' })
 
 const Vacancies = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { activeStep, setActiveStep } = useSteps({index: 0, count: steps.length})
+    const { vacanciesList } = useSelector((state:RootState) => state.vacancies)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(initializeVacancies())
+    }, [])
+    
+
     return (<>
         <GridItem mt={3} as={'div'} style={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} rowSpan={2}>
             <Box ml={4} ><Heading as={'h4'} size={'md'} >Vacancies</Heading></Box>
@@ -40,7 +49,18 @@ const Vacancies = () => {
         <GridItem ml={4} rounded={'2xl'} mr={4} mt={3} as={'div'} style={{backgroundColor:'white', boxShadow: '2px 0px 2px rgba(0, 0, 0, 0.2)', display:'grid', alignItems:'center'}} rowSpan={4}>
             <VacanciesSearchBar />
         </GridItem>
-        <TableWrapper />
+        <TableWrapper
+            tableProps= {{
+                columns: tableColumns,
+                data: vacanciesList
+            }}
+            paginationProps={{
+                pageIndex: 1,
+                pageSize: 5,
+                totalItemCount: vacanciesList.length
+            }}
+            onChange={() => {}}
+        />
         <ModalWrapper isOpen={isOpen} onClose={onClose} activeStep={activeStep} setActiveStep={setActiveStep} />
     </>)
 }
