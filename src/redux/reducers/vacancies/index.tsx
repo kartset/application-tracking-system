@@ -12,10 +12,10 @@ const initialVacanciesList = Array.from({length: 5 }, (v, i) => i).map(i => {
         public: true,
         // remote: true,
         // posted: faker.date.between({ from: '2023-01-01T00:00:00.000Z', to: (new Date()).toISOString()}).toString().split(' ').splice(1,3).join(' '),
-        location: faker.location.city(),
         salary: '$ ' + String(faker.number.float({min:20, max:30}).toFixed(2)) +'k' + ' - ' + String(faker.number.float({min:40, max:50}).toFixed(2)) +'k',
+        location: faker.location.city(),
         experience: String(faker.number.int({min:1, max:3})) + ' - ' + String(faker.number.int({min:4,max:7})),
-        equity: '$ ' + String(faker.number.float({min:0, max:0.5}).toFixed(2)) + ' - ' + String(faker.number.float({min:0.5, max:1}).toFixed(2)),
+        equity: String(faker.number.float({min:0, max:0.5}).toFixed(2)) + ' - ' + String(faker.number.float({min:0.5, max:1}).toFixed(2)) + '%',
         jobExperienceLevel: jobExperienceLevels[Math.floor(Math.random()*jobExperienceLevels.length)]
 
     }

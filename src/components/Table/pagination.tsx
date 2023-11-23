@@ -55,7 +55,7 @@ const Pagination = ({pageIndex, pageSize, totalItemCount}:any) => {
                     <MenuList >
                         {itemsPerPageOptions.filter(item => !item.selected).map(item => {
                             return (
-                                <MenuItem>{item.text}</MenuItem>
+                                <MenuItem key={item.text} >{item.text}</MenuItem>
                             )
                         })}
                     </MenuList>
