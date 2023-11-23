@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { jobExperienceLevels } from '../../../utils/constants'
 
-const initialVacanciesList = [1,2,3,4,5].map(i => {
+const initialVacanciesList = Array.from({length: 5 }, (v, i) => i).map(i => {
     return {
         position: faker.person.jobTitle(),
         type: faker.person.jobType(),
