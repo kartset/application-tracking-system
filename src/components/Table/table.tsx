@@ -20,10 +20,11 @@ const AppTable = ({data, columns}:any) => {
                         return (
                             <Tr key={i} >
                                 {arr.map((el) => {
+                                    let column = columns[el]
                                     let val = 
-                                        (columns[el].field === 'remote' || columns[el].field === 'public') ? 
-                                             (d[columns[el].field] ? 'True' : 'False') 
-                                            : d[columns[el].field]
+                                        (column.field === 'remote' || column.field === 'public') ? 
+                                             (d[column.field] ? 'True' : 'False') 
+                                            : d[column.field]
                                     return (
                                         <Td key={val} p={3} textAlign={'center'} >{val}</Td>
                                     )

@@ -11,7 +11,7 @@ const TableWrapper = ({tableProps, paginationProps}:any) => {
                 <Text wordBreak="unset">Go to:</Text>
                 <Input ml={1} size='xs' rounded={'lg'} w="40px" />
             </Flex>
-            <Pagination />
+            <Pagination {...paginationProps} />
         </Flex>
         </GridItem>
   )
