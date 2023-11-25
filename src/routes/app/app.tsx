@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid, GridItem, Input,} from "@chakra-ui/react"
+import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Grid, GridItem, Input, useDisclosure, useMediaQuery,} from "@chakra-ui/react"
 import { Outlet, useNavigate } from "react-router-dom"
 import Navbar from "./navbar"
 import Sidebar from "./sidebar"
@@ -16,6 +16,9 @@ const Layout = () => {
 
     const { user } = useSelector((state:RootState) => state.appLogin)
     const dispatch = useDispatch()
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [isLargerThan768] = useMediaQuery('(min-width: 769px)')
+
     
     useEffect(() => {
         dispatch(getUser())
@@ -24,17 +27,33 @@ const Layout = () => {
     return (
         Object.keys(user).length > 0 ?
             <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={637} bgColor={'#131215'}>
-                <GridItem colSpan={2}>
+                { isLargerThan768 ? <GridItem colSpan={2}>
                     <Sidebar />
-                </GridItem>
-                <GridItem rounded={'2xl'} colSpan={10}>
-                    <Grid rounded={'2xl'} height={593} templateRows='repeat(22, 1fr)' mt={1} mb={2} mr={2} bgColor={'#F8F8FF'} >
-                        <GridItem style={{borderTopLeftRadius:'1rem', borderTopRightRadius:'1rem', boxShadow: '0 0px 0px rgba(0, 0, 0, 0.2)'}} backgroundColor={'white'} rowSpan={2}>
-                            <Navbar />
+                </GridItem> : <></>  }
+                <GridItem rounded={'2xl'} colSpan={isLargerThan768 ? 10 : 12}>
+                    <Grid 
+                        rounded={isLargerThan768 ? '2xl' : 'none'} 
+                        height={isLargerThan768 ? 593 : 637} 
+                        templateRows='repeat(22, 1fr)' 
+                        mt={isLargerThan768 ? 1 : 0} 
+                        mb={2} mr={isLargerThan768 ? 2 : 0} 
+                        bgColor={'#F8F8FF'} 
+                    >
+                        <GridItem 
+                            style={{
+                                borderTopLeftRadius: isLargerThan768 ? '1rem' : 'none', 
+                                borderTopRightRadius: isLargerThan768 ? '1rem' : 'none', 
+                                boxShadow: '0 0px 0px rgba(0, 0, 0, 0.2)'
+                            }} 
+                            backgroundColor={'white'} 
+                            rowSpan={isLargerThan768 ? 2 : 3}
+                        >
+                            <Navbar onOpen={onOpen} />
                         </GridItem>
                         <Outlet />
                     </Grid>
                 </GridItem>
+                <MobileSidebarDrawer isOpen={isOpen} onClose={onClose} />
             </Grid>
         :   <Login />
         
@@ -118,5 +137,18 @@ export const Login = () => {
         </div>
     )
 }
+
+const MobileSidebarDrawer:React.FC<any> = ({isOpen, onClose,}) => {  
+    return (
+        <Drawer size={'xs'} placement={'left'} onClose={onClose} isOpen={isOpen}>
+          <DrawerOverlay />
+          <DrawerContent bg={'#2A2B2D'} >
+            <DrawerBody>
+                <Sidebar />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+    )
+  }
 
 export default Layout
