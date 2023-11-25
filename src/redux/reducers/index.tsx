@@ -3,12 +3,14 @@ import login from "./login";
 import vacancies from "./vacancies";
 import jobs from "./jobs"
 import appLogin from "./appLogin";
+import app from "./app"
 
 let rootReducer = combineReducers({
     login,
     vacancies,
     jobs,
-    appLogin
+    appLogin,
+    app
 })
 
 export default rootReducer
