@@ -87,7 +87,12 @@ const Vacancies = () => {
                 <MobileTable />
             </GridItem> 
         }
-        <ModalWrapper isOpen={isOpen} onClose={onClose} activeStep={activeStep} setActiveStep={setActiveStep} />
+        <ModalWrapper 
+            isOpen={isOpen} 
+            onClose={onClose} 
+            activeStep={activeStep} 
+            setActiveStep={setActiveStep} 
+        />
     </>)
 }
 

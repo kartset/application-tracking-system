@@ -15,25 +15,26 @@ const MobileTable = () => {
     const { vacanciesList } = useSelector((state:RootState) => state.vacancies)
     const [currentVacancy, setCurrentVacancy] = useState({})
     return (<>
-        <Flex flexDirection={'column'} >
+        <Fragment>
             <Flex
-                fontWeight={'semibold'} pt={4} pb={4} fontSize={'13px'} 
+                fontWeight={'bold'} pt={4} pb={4} fontSize={'13px'} 
                 justifyContent={'space-between'} textAlign={'start'} 
                 ml={3} mr={3}
             >
-                <p>Postions</p>
-                <p>Actions</p>
+                <p style={{fontSize:'16px'}} >Postions</p>
+                <p style={{fontSize:'16px'}} >Actions</p>
             </Flex>
-            {vacanciesList.map((vac:any, i:any) => {
-                return (
-                    <Fragment key={i}>
-                        <Flex 
+            <Grid templateColumns={'repeat(2, 1fr)'} height={'80%'} paddingBottom={4} >
+                {vacanciesList.map((vac:any, i:any) => {
+                    return (
+                        <GridItem
+                            display={'flex'} rowSpan={1} colSpan={2} key={i}
                             fontWeight={'normal'} pb={2} fontSize={'13px'} 
-                            justifyContent={'space-between'} textAlign={'start'} 
+                            justifyContent={'space-between'} textAlign={'start'}
+                            alignItems={'center'} ml={3} mr={3}
                             onClick={() => {onOpen();setCurrentVacancy(vac)}}
-                            ml={3} mr={3}
                         >
-                            <p>{vac.position}</p>
+                            <p style={{fontSize:'16px'}} >{vac.position}</p>
                             <Menu>
                                 <MenuButton 
                                     as={IconButton} icon={<HamburgerIcon />} size={'xs'}
@@ -42,14 +43,14 @@ const MobileTable = () => {
                                 <MenuList>
                                     <MenuItem icon={<ExternalLinkIcon />} >Make Public</MenuItem>
                                     <MenuItem icon={<DeleteIcon />} >Delete</MenuItem>
-                                   
+                                
                                 </MenuList>
                             </Menu>
-                        </Flex>
-                    </Fragment>
-                )
-            })}
-        </Flex>
+                        </GridItem>
+                    )
+                })}
+            </Grid>
+        </Fragment>
         <TableDrawer isOpen={isOpen} onClose={onClose} currentVacancy={currentVacancy} /> 
     </>)
 }

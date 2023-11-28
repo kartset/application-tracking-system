@@ -24,10 +24,10 @@ const breakpoints = {
     '2xl': "80em",      //1280px
     '3xl': '90em',      //1440px
     '4xl': '160em',     //2560px  
-  }
-  
+}
 
-const theme = extendTheme({...breakpoints})
+const defaultTheme = {styles: {global: (props:any) => {return({ })}}}
+const theme = extendTheme({breakpoints, ...defaultTheme})
 
 
 root.render(

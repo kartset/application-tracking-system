@@ -28,14 +28,14 @@ const Layout = () => {
     
     return (
         Object.keys(user).length > 0 ?
-            <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={637} bgColor={'#131215'}>
+            <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={'100vh'} bgColor={'#131215'}>
                 <GridItem display={{base:'none', md:'block'}} colSpan={2}>
                     <Sidebar />
                 </GridItem> 
                 <GridItem rounded={'2xl'} colSpan={{base:12, md:10}}>
                     <Grid 
                         rounded={{base:'none', md:'2xl'}} 
-                        height={{base:637, md:593}} 
+                        height={{base:'100vh', md:'95vh'}} 
                         templateRows='repeat(22, 1fr)' 
                         mt={{base:0, md:1}} 
                         mb={2} mr={{base:0,md:2}} 
