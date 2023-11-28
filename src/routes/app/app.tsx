@@ -29,17 +29,17 @@ const Layout = () => {
     return (
         Object.keys(user).length > 0 ?
             <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={'100vh'} bgColor={'#131215'}>
-                <GridItem display={{base:'none', md:'block'}} colSpan={2}>
+                <GridItem width={'16vw'}  display={{base:'none', md:'block'}} colSpan={2}>
                     <Sidebar />
                 </GridItem> 
-                <GridItem rounded={'2xl'} colSpan={{base:12, md:10}}>
+                <GridItem width={{base:'100vw', md:'84vw'}} rounded={'2xl'} colSpan={{base:12, md:10}}>
                     <Grid 
                         rounded={{base:'none', md:'2xl'}} 
                         height={{base:'100vh', md:'95vh'}} 
                         templateRows='repeat(22, 1fr)' 
                         mt={{base:0, md:1}} 
                         mb={2} mr={{base:0,md:2}} 
-                        bgColor={'#F8F8FF'} 
+                        bgColor={'#F8F8FF'}
                     >
                         <GridItem 
                             style={{ 
@@ -49,6 +49,7 @@ const Layout = () => {
                             borderTopRightRadius={{base:'none', md:'1rem'}}
                             backgroundColor={'white'} 
                             rowSpan={{base:3, md:2}}
+                            width={'100%'}
                         >
                             <Navbar onOpen={onOpen} />
                         </GridItem>

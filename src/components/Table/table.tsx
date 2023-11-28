@@ -8,7 +8,7 @@ import {
 
 const AppTable = ({data, columns}:any) => {
     return (
-        <TableContainer borderRadius={'1rem'} >
+        <TableContainer width={'inherit'} borderRadius={'1rem'} >
             <Table size='sm'>
                 <Thead bgColor={'white'}>
                     <Tr>{columns.map((col:any) => (<Th p={3} key={col.name} textAlign={'center'}>{col.name}</Th>))}</Tr>

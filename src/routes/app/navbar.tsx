@@ -27,7 +27,11 @@ const Navbar:React.FC<any> = ({onOpen}) => {
 
     return (
         <Grid height={'-webkit-fill-available'} templateColumns='repeat(12, 1fr)' >
-            <GridItem display={{base:'none', md:'block'}}  pl={4} as={'div'} style={{paddingTop:'5px', alignSelf:'center'}} colSpan={10}>
+            <GridItem 
+                display={{base:'none', md:'block'}} pl={4} as={'div'} 
+                style={{paddingTop:'5px', alignSelf:'center'}} 
+                colSpan={{base:2, md:8, '2xl':10}}
+            >
                 <Breadcrumb fontWeight={400} spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} href='#'>Home</BreadcrumbLink>
@@ -41,7 +45,15 @@ const Navbar:React.FC<any> = ({onOpen}) => {
             <GridItem display={{base:'block', md:'none'}} style={{paddingTop:'5px', alignSelf:'center'}} colSpan={2} >
                 <IconButton onClick={() => {onOpen();dispatch(setSideBarState()) }} size={'sm'} variant={'outline'} aria-label="SidebarButton" icon={<HamburgerIcon />} />
             </GridItem>
-            <GridItem as={'div'} style={{display:'flex', flexDirection:'row', justifyContent:'end', alignItems:'center', paddingTop:'5px'}}  colSpan={{base:10, md:2}}>
+            <GridItem 
+                as={'div'} 
+                style={{
+                    display:'flex', flexDirection:'row', 
+                    justifyContent:'end', alignItems:'center', 
+                    paddingTop:'5px'
+                }} 
+                colSpan={{base:10, md:4, '2xl':2}}
+            >
                 <Avatar src={img} size='xs' >
                     <AvatarBadge 
                         placement='top-end' 

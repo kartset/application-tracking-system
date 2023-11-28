@@ -12,7 +12,7 @@ const Sidebar = () => {
     let pathname = location.pathname || "/";
     const [hoveredPath, setHoveredPath] = useState(pathname);
     return (
-        <Grid height={593} templateRows='repeat(17, 1fr)' >
+        <Grid height={'100vh'} width={'100%'} templateRows='repeat(17, 1fr)' >
             <GridItem style={{display:'flex', alignItems:'center', justifyContent:'center'}} className={"brand text-scrolled"} rowSpan={2} >AT-System</GridItem>
             <GridItem style={{display:'flex', alignItems:'center', justifyContent:'center'}} rowSpan={3}>
                 <Image width={'35%'} height={'90%'} borderRadius={'10px'} src={url} />
