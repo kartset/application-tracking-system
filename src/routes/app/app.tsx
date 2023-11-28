@@ -1,4 +1,8 @@
-import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Grid, GridItem, Input, useDisclosure, useMediaQuery,} from "@chakra-ui/react"
+import { 
+    Box, Button, Drawer, DrawerBody, 
+    DrawerContent, DrawerOverlay, Flex, 
+    Grid, GridItem, Input, useDisclosure
+} from "@chakra-ui/react"
 import { Outlet, useNavigate } from "react-router-dom"
 import Navbar from "./navbar"
 import Sidebar from "./sidebar"
@@ -17,8 +21,6 @@ const Layout = () => {
     const { user } = useSelector((state:RootState) => state.appLogin)
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [isLargerThan768] = useMediaQuery('(min-width: 769px)')
-
     
     useEffect(() => {
         dispatch(getUser())
@@ -27,26 +29,26 @@ const Layout = () => {
     return (
         Object.keys(user).length > 0 ?
             <Grid templateColumns={'repeat(12, 1fr)'} flexDirection={'row'} height={637} bgColor={'#131215'}>
-                { isLargerThan768 ? <GridItem colSpan={2}>
+                <GridItem display={{base:'none', md:'block'}} colSpan={2}>
                     <Sidebar />
-                </GridItem> : <></>  }
-                <GridItem rounded={'2xl'} colSpan={isLargerThan768 ? 10 : 12}>
+                </GridItem> 
+                <GridItem rounded={'2xl'} colSpan={{base:12, md:10}}>
                     <Grid 
-                        rounded={isLargerThan768 ? '2xl' : 'none'} 
-                        height={isLargerThan768 ? 593 : 637} 
+                        rounded={{base:'none', md:'2xl'}} 
+                        height={{base:637, md:593}} 
                         templateRows='repeat(22, 1fr)' 
-                        mt={isLargerThan768 ? 1 : 0} 
-                        mb={2} mr={isLargerThan768 ? 2 : 0} 
+                        mt={{base:0, md:1}} 
+                        mb={2} mr={{base:0,md:2}} 
                         bgColor={'#F8F8FF'} 
                     >
                         <GridItem 
-                            style={{
-                                borderTopLeftRadius: isLargerThan768 ? '1rem' : 'none', 
-                                borderTopRightRadius: isLargerThan768 ? '1rem' : 'none', 
+                            style={{ 
                                 boxShadow: '0 0px 0px rgba(0, 0, 0, 0.2)'
-                            }} 
+                            }}
+                            borderTopLeftRadius={{base:'none', md:'1rem'}}
+                            borderTopRightRadius={{base:'none', md:'1rem'}}
                             backgroundColor={'white'} 
-                            rowSpan={isLargerThan768 ? 2 : 3}
+                            rowSpan={{base:3, md:2}}
                         >
                             <Navbar onOpen={onOpen} />
                         </GridItem>

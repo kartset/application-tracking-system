@@ -2,7 +2,8 @@ import { ChevronDownIcon, ChevronRightIcon, HamburgerIcon } from "@chakra-ui/ico
 import { 
     Avatar, AvatarBadge, Breadcrumb, BreadcrumbItem, 
     BreadcrumbLink, Button, Grid, GridItem, IconButton, 
-    Link, Menu, MenuButton, MenuItem, MenuList, useMediaQuery 
+    Link, Menu, MenuButton, MenuItem, MenuList, useMediaQuery,
+    Text
 } from "@chakra-ui/react"
 import img from '../../assets/bell.png'
 import { useNavigate } from "react-router-dom"
@@ -14,7 +15,6 @@ const url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTewPdubiwZ-wA
 const Navbar:React.FC<any> = ({onOpen}) => {
 
     const navigate = useNavigate()
-    const [isLargerThan768] = useMediaQuery('(min-width: 769px)')
     const dispatch = useDispatch()
 
     const logout = () => {
@@ -27,23 +27,21 @@ const Navbar:React.FC<any> = ({onOpen}) => {
 
     return (
         <Grid height={'-webkit-fill-available'} templateColumns='repeat(12, 1fr)' >
-            { isLargerThan768 ? 
-                <GridItem pl={4} as={'div'} style={{paddingTop:'5px', alignSelf:'center'}} colSpan={10}>
-                    <Breadcrumb fontWeight={400} spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink as={Link} href='#'>Home</BreadcrumbLink>
-                        </BreadcrumbItem>
+            <GridItem display={{base:'none', md:'block'}}  pl={4} as={'div'} style={{paddingTop:'5px', alignSelf:'center'}} colSpan={10}>
+                <Breadcrumb fontWeight={400} spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink as={Link} href='#'>Home</BreadcrumbLink>
+                    </BreadcrumbItem>
 
-                        <BreadcrumbItem isCurrentPage>
-                            <BreadcrumbLink as={Link} href='#'>Vacancies</BreadcrumbLink>
-                        </BreadcrumbItem>
-                    </Breadcrumb>
-                </GridItem> 
-            :  <GridItem style={{paddingTop:'5px', alignSelf:'center'}} colSpan={2} >
-                    <IconButton onClick={() => {onOpen();dispatch(setSideBarState()) }} size={'sm'} variant={'outline'} aria-label="SidebarButton" icon={<HamburgerIcon />} />
-                </GridItem>
-            }
-            <GridItem as={'div'} style={{display:'flex', flexDirection:'row', justifyContent:'end', alignItems:'center', paddingTop:'5px'}}  colSpan={isLargerThan768 ? 2 : 10}>
+                    <BreadcrumbItem isCurrentPage>
+                        <BreadcrumbLink as={Link} href='#'>Vacancies</BreadcrumbLink>
+                    </BreadcrumbItem>
+                </Breadcrumb>
+            </GridItem> 
+            <GridItem display={{base:'block', md:'none'}} style={{paddingTop:'5px', alignSelf:'center'}} colSpan={2} >
+                <IconButton onClick={() => {onOpen();dispatch(setSideBarState()) }} size={'sm'} variant={'outline'} aria-label="SidebarButton" icon={<HamburgerIcon />} />
+            </GridItem>
+            <GridItem as={'div'} style={{display:'flex', flexDirection:'row', justifyContent:'end', alignItems:'center', paddingTop:'5px'}}  colSpan={{base:10, md:2}}>
                 <Avatar src={img} size='xs' >
                     <AvatarBadge 
                         placement='top-end' 
@@ -53,10 +51,11 @@ const Navbar:React.FC<any> = ({onOpen}) => {
                         4
                     </AvatarBadge>
                 </Avatar>
-               { isLargerThan768 ? <Avatar size={'sm'} src={url} />  : <></>}
+               <Avatar display={{base:'none', md:'block'}} size={'sm'} src={url} />
                 <Menu>
                     <MenuButton size='sm' variant={'ghost'} style={{fontWeight:'normal'}} as={Button} rightIcon={<ChevronDownIcon />}>
-                        { isLargerThan768 ? 'Kartik Setia' : <Avatar size={'sm'} src={url} /> }
+                        <Text display={{base:'none', md:'block'}} >Kartik Setia</Text> 
+                        <Avatar display={{base:'block', md:'none'}} size={'sm'} src={url} /> 
                     </MenuButton>
                     <MenuList>
                         <MenuItem>Profile</MenuItem>

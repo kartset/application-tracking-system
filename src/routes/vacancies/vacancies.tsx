@@ -48,19 +48,18 @@ const Vacancies = () => {
                 <Heading as={'h4'} size={'md'} >
                     Vacancies
                 </Heading>
-            </Box>
-            {isLargerThan768 ? 
-                <Box mr={4} >
-                    <Button 
-                        onClick={() => {onOpen()}} 
-                        rounded={'xl'} variant={'solid'} 
-                        leftIcon={<AddIcon />} colorScheme='teal' 
-                        size={'sm'} 
-                    >
-                        Add New
-                    </Button>
-                </Box> 
-            : <></>} 
+            </Box> 
+            <Box mr={4} >
+                <Button
+                    display={{base:'none', md:'block'}} 
+                    onClick={() => {onOpen()}} 
+                    rounded={'xl'} variant={'solid'} 
+                    leftIcon={<AddIcon />} colorScheme='teal' 
+                    size={'sm'} 
+                >
+                    Add New
+                </Button>
+            </Box> 
         </GridItem>
         <GridItem ml={4} rounded={'2xl'} mr={4} mt={3} as={'div'} style={{backgroundColor:'white', boxShadow: '2px 0px 2px rgba(0, 0, 0, 0.2)', display:'grid', alignItems:'center'}} rowSpan={4}>
             <VacanciesSearchBar />
@@ -78,7 +77,16 @@ const Vacancies = () => {
                 }}
                 onChange={() => {}}
             />
-        : <Box><MobileTable /></Box> }
+        :   <GridItem 
+                style={{ 
+                    borderRadius:'1rem', border:'1px #E3E9F0 solid', 
+                    backgroundColor:'white', boxShadow: '2px 0px 2px rgba(0, 0, 0, 0.2)'
+                }} 
+                ml={4} mr={4} mt={3} rowSpan={13}
+            >
+                <MobileTable />
+            </GridItem> 
+        }
         <ModalWrapper isOpen={isOpen} onClose={onClose} activeStep={activeStep} setActiveStep={setActiveStep} />
     </>)
 }
@@ -703,20 +711,33 @@ const JobsFormSix:React.FC<any> = ({onSubmit, formId}) => {
 const VacanciesSearchBar = () => {
     const [isLargerThan768] = useMediaQuery('(min-width: 769px)')
     return (
-        <Grid ml={4} paddingBottom={'10px'} gap={isLargerThan768 ? 10 : 2} templateColumns={'repeat(6, 1fr)'}>
-            <GridItem colSpan={ isLargerThan768 ? 3 : 5} >
+        <Grid 
+            ml={4} 
+            paddingBottom={'10px'} 
+            gap={{base: 4, md:10}} 
+            templateColumns={'repeat(6, 1fr)'}
+        >
+            <GridItem colSpan={{ base:5, md:3 }} >
                 <FormControl pt={1} >
-                    <FormLabel fontSize={'12px'} >What are you looking for ?</FormLabel>
-                    <InputGroup>
-                       { isLargerThan768 ?  <InputLeftElement pointerEvents='none'>
+                    <FormLabel fontWeight={{base:'bold', md:'normal'}} fontSize={'12px'} >What are you looking for ?</FormLabel>
+                    <InputGroup size={ isLargerThan768 ? 'sm' : 'md'} >
+                        <InputLeftElement pointerEvents='none'>
                             <Search2Icon color='gray.300' />
-                        </InputLeftElement> : <></>}
-                        <Input variant={'filled'} rounded={'lg'} size={ isLargerThan768 ? 'sm' : 'xs'} type='tel' placeholder={ isLargerThan768 ? 'Search for category, name, company, etc' : 'Search...'} />
+                        </InputLeftElement> 
+                        <Input 
+                            rounded={'lg'}
+                            variant={'filled'} 
+                            placeholder={ 
+                                isLargerThan768 ? 
+                                    'Search for category, name, company, etc' 
+                                :   'Search...'
+                            } 
+                        />
                     </InputGroup>
                 </FormControl>
             </GridItem>
-            {isLargerThan768 ? <><GridItem colSpan={1}>
-                <FormControl>
+            <GridItem display={{base:'none', md:'block'}} colSpan={1}>
+                <FormControl pt={1} >
                     <FormLabel fontSize={'12px'} >Category</FormLabel>
                     <Select fontSize={'12px'} size={'sm'} rounded={'lg'} placeholder='All'>
                         <option value='option1'>Option 1</option>
@@ -725,8 +746,8 @@ const VacanciesSearchBar = () => {
                     </Select>
                 </FormControl>
             </GridItem>
-            <GridItem colSpan={1}>
-                <FormControl>
+            <GridItem display={{base:'none', md:'block'}} colSpan={1}>
+                <FormControl pt={1} >
                     <FormLabel fontSize={'12px'} >Status</FormLabel>
                     <Select fontSize={'12px'} size={'sm'} rounded='lg' placeholder='All'>
                         <option value='option1'>Option 1</option>
@@ -734,22 +755,33 @@ const VacanciesSearchBar = () => {
                         <option value='option3'>Option 3</option>
                     </Select>
                 </FormControl>
-            </GridItem></> : <></>}
-            <GridItem as={'div'} style={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'end'}} colSpan={1}>
-                {isLargerThan768 ? 
-                    <Button 
-                        rounded={'xl'} pr={8} pl={8} 
-                        colorScheme='teal' size='sm'
-                    >
-                        Search
-                    </Button> 
-                :   <IconButton 
-                        aria-label='Search' 
-                        size={'sm'} 
-                        variant={'ghost'} 
-                        icon={<Search2Icon />} 
-                    />
-                }
+            </GridItem>
+            <GridItem 
+                as={'div'} 
+                style={{
+                    display:'flex', flexDirection:'row', 
+                    justifyContent:'center', 
+                    alignItems:'end'
+                }}
+                colSpan={1}
+
+            >
+                
+                <Button 
+                    rounded={'xl'} pr={4} pl={4} 
+                    colorScheme='teal' size='xs'
+                    display={{base:'none', md:'block' }}
+                >
+                    Search
+                </Button> 
+                <IconButton 
+                    aria-label='Search' 
+                    size={'md'} 
+                    variant={'ghost'} 
+                    icon={<Search2Icon />} 
+                    display={{base:'block', md:'none'}}
+                />
+                
             </GridItem>
         </Grid>
     )

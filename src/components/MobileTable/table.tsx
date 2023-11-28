@@ -15,7 +15,7 @@ const MobileTable = () => {
     const { vacanciesList } = useSelector((state:RootState) => state.vacancies)
     const [currentVacancy, setCurrentVacancy] = useState({})
     return (<>
-        <Flex mt={4} flexDirection={'column'} >
+        <Flex flexDirection={'column'} >
             <Flex
                 fontWeight={'semibold'} pt={4} pb={4} fontSize={'13px'} 
                 justifyContent={'space-between'} textAlign={'start'} 
