@@ -5,11 +5,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../redux"
 import { resetFilter, updateFilter } from "../../redux/reducers/jobs"
 
-
-
 const Filter = () => {
-    const { jobCategoriesArr, jobDepartmentsArr, jobsExperienceLevelArr, filters } = useSelector((state:RootState) => state.jobs)
+
+    const { 
+        jobCategoriesArr, jobDepartmentsArr, 
+        jobsExperienceLevelArr, filters 
+    } = useSelector((state:RootState) => state.jobs)
     const dispatch = useDispatch()
+
     return (
         <Box mx="auto" px={8} py={4}  rounded="lg" shadow="lg" bgColor={'white'} style={{height:'fit-content', display:'flex', flexDirection:'column'}}>
             <Flex mb={4} alignItems={'center'} justifyContent={'space-between'} flexDirection={'row'}>                    
@@ -54,7 +57,7 @@ const LocationInput = () => {
         return new Loader({
           id:'google-map-script',
           libraries: ['places'],
-          apiKey: 'AIzaSyB3CeVhjj81B6cRb_32g1z-QbTFNKTuP14',
+          apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '',
           language: 'en',
           region:  'US',
           mapIds:  [],
