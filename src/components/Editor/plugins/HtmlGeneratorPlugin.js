@@ -9,7 +9,7 @@ const HtmlGeneratorPlugin = ({onChange, formFields}) => {
         const json = editorState.toJSON();
         onChange(json, JSON.stringify($generateHtmlFromNodes(editor, null)))
         if(formFields && formFields.setValues) {
-            formFields.setValues({html:JSON.stringify($generateHtmlFromNodes(editor, null))})
+            formFields.setValues({textHTML:JSON.stringify($generateHtmlFromNodes(editor, null))})
         }
       })
     );
