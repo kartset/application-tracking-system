@@ -8,14 +8,17 @@ import {
     ModalOverlay, ModalHeader, ModalCloseButton, 
     ModalBody, ModalFooter, useSteps, useToast, 
     Flex, Switch, Text, Checkbox, Tag, TagLabel, 
-    TagRightIcon, ListItem, OrderedList, Stack, useMediaQuery, IconButton, 
+    TagRightIcon, Stack, useMediaQuery, IconButton, 
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
 import { useEffect, useId, useState } from "react"
 import Editor from "../../components/Editor/Editor"
 import CreatableSelect from 'react-select/creatable';
-import { ErrorMessage, Field, Form, Formik } from "formik"
+import { 
+    ErrorMessage, Field, FieldArray, 
+    Form, Formik 
+} from "formik"
 import * as Yup from 'yup';
 import SliderWrapper from "../../components/Slider"
 import TimeRange from "../../components/TimeRange"
@@ -221,20 +224,20 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
     ]
     
     let formSchema = Yup.object({
-        jobTitle: Yup.string().required("Required"),
-        jobPosition: Yup.string().oneOf(jobPositionOptions.map((option) => option.value)).required("Required"),
-        jobType: Yup.string().oneOf(jobTypeOptions.map((option) => option.value)).required("Required"),
-        jobLocation: Yup.string().required("Required"),
-        remoteFriendly: Yup.boolean().default(true),
+        title: Yup.string().required("Required"),
+        position: Yup.string().oneOf(jobPositionOptions.map((option) => option.value)).required("Required"),
+        type: Yup.string().oneOf(jobTypeOptions.map((option) => option.value)).required("Required"),
+        location: Yup.string().required("Required"),
+        remote: Yup.boolean().default(true),
         department: Yup.string().oneOf(departmentOptions.map((option) => option.value)).required("Required"),
     })
 
     let initialValues = { 
-        jobTitle: '', 
-        jobPosition: '', 
-        jobType: '', 
-        jobLocation: '', 
-        remoteFriendly:true,  
+        title: '', 
+        position: '', 
+        type: '', 
+        location: '', 
+        remote:true,  
         department: '' 
     }
 
@@ -268,7 +271,7 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
                 onSubmit={(values) =>  {onSubmit(values)}}
             >
                 <Form id={formId} style={{flex:1, marginTop:'4px', marginLeft:'4px', display:'flex', flexDirection:'column'}}>
-                    <Field name='jobTitle'>
+                    <Field name='title'>
                         {({field}:any) => {
                             return (
                                 <Flex flex={1} justifyContent={'start'} alignItems={'center'}>
@@ -276,12 +279,12 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
                                         {...field} width={'75%'} placeholder="Enter Job Title"
                                         rounded={'lg'} size={'sm'} 
                                     />
-                                    <ErrorMessage name="jobTitle" />
+                                    <ErrorMessage name="title" />
                                 </Flex>
                             )
                         }}
                     </Field>
-                    <Field name='jobPosition'>
+                    <Field name='position'>
                         {({field}:any) => {
                             return (
                                 <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
@@ -290,12 +293,12 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
                                             return (<option key={option.value} value={option.value}>{option.text}</option>)
                                         })}
                                     </Select>
-                                    <ErrorMessage name="jobPosition" />
+                                    <ErrorMessage name="position" />
                                 </Flex>
                             )
                         }}
                     </Field>
-                    <Field name='jobType' >
+                    <Field name='type' >
                         {({field}:any) => {
                             return (
                                 <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
@@ -304,18 +307,18 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
                                             return (<option key={type.value} value={type.value}>{type.text}</option>)
                                         })}
                                     </Select>
-                                    <ErrorMessage name="jobType" />
+                                    <ErrorMessage name="type" />
                                 </Flex>
                             )
                         }}
                     </Field>
-                    <Field name='jobLocation'>
+                    <Field name='location'>
                         {({field}:any) => {
                             return (
                                 <Box display={'flex'} flexDirection={'row'} >
                                     <Flex gap={1} flex={1} flexDirection={'column'}  justifyContent={'start'} >
                                         <Input {...field} width={'75%'} rounded={'lg'} placeholder="Job Location" size={'sm'} /> {/*make it a google places api with city or region selection */}
-                                        <Field name='remoteFriendly' >
+                                        <Field name='remote' >
                                             {({field}:any) => {
                                                 return (
                                                     <Checkbox {...field} size={'sm'} defaultChecked>Remote Friendly</Checkbox>
@@ -323,7 +326,7 @@ const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
                                             }}
                                         </Field>
                                     </Flex>
-                                    <ErrorMessage name="jobLocation" />
+                                    <ErrorMessage name="location" />
                                 </Box>
                             )
                         }}
@@ -352,7 +355,7 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
     
     let formTwoSchema = Yup.object({
         numVacancies: Yup.number().min(1, "Vacancies Should be more than 1").required("Required"),
-        onlyWomen: Yup.boolean().default(false),
+        onlyWomenHiring: Yup.boolean().default(false),
         workHours: Yup.object({
             startTime:Yup.number().default(undefined).required("Required"), 
             startTimeMeridiem:Yup.string().oneOf(['ante', 'post']).default(undefined).required("Required"),
@@ -374,7 +377,7 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
 
     let initialValues = { 
         numVacancies: 0, 
-        onlyWomen: false, 
+        onlyWomenHiring: false, 
         workHours: {
             startTime:undefined, 
             startTimeMeridiem:undefined,
@@ -425,7 +428,7 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
                             return(
                                 <Flex gap={2} flexDirection={'column'} justifyContent={'center'} flex={1}>
                                     <SliderWrapper name={field.name} type="number" />
-                                    <Field name="onlyWomen" >
+                                    <Field name="onlyWomenHiring" >
                                         {({field}:any) => {
                                             return (<Checkbox {...field} size={'sm'} >Hiring Only Women </Checkbox>)
                                         }}
@@ -481,10 +484,21 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
 
 const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
 
-    const [skillsTagsAll, setSkillsTagsAll] = useState<any>([{label:"Communication", value:"communication"}, {label:"Leadership", value:"leadership"}])
+    const [skillsTagsAll, setSkillsTagsAll] = useState<any>([{id:'1', label:"Communication", value:"communication"}, {id:'2', label:"Leadership", value:"leadership"}])
     const [skillsTagsChosen, setSkillsTagsChosen] = useState<any>([])
-    let formThreeSchema = Yup.object({ skillsTags: Yup.array().min(1, "Required").required("Required") }) 
-    let initialValues = { skillsTags: [] }
+    let formThreeSchema = Yup.object().shape({
+        skills: Yup.array().of( 
+            Yup.object().shape({
+                skillId: Yup.string(),
+                skill: Yup.string(),
+            })
+        ).min(1, "Required").required("Required")
+    }) 
+    let initialValues = { skills: [{
+        skillId: '',
+        skill: ''
+    }
+    ] }
 
     const setOptions = () => {
         let optionValues = skillsTagsAll.map((x:any) => x.value).filter((x:string) => !skillsTagsChosen.includes(x))
@@ -506,7 +520,7 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                     onSubmit={(values) =>  {onSubmit(values)}}
                 >
                     <Form id={formId} style={{gap:'16px', marginTop:'5px', display:'flex', flex:1, flexDirection:'column' }} >
-                        <Field name="skillsTags">
+                        <Field name="skills">
                             {({field, form}:any) => {
                                 return (
                                     <Flex gap={2} flex={1} flexDirection={'column'} >
@@ -514,13 +528,13 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                                             {...field} 
                                             value={''}
                                             onChange={(newValue:any, actionMeta:ActionMeta<string>) => {
-                                                setSkillsTagsChosen([...skillsTagsChosen, newValue.value])
-                                                form.setValues({...form.values, skillsTags:[...skillsTagsChosen, newValue.value]})
+                                                setSkillsTagsChosen([...skillsTagsChosen, {skillId:newValue.id, skill:newValue.value}])
+                                                form.setValues({...form.values, skills:[...skillsTagsChosen,{skillId:newValue.id, skill:newValue.value}]})
                                             }} 
                                             onCreateOption={(inputValue:string) => {
-                                                setSkillsTagsAll([...skillsTagsAll, {label:inputValue, value:inputValue}])
-                                                setSkillsTagsChosen([...skillsTagsChosen, inputValue])
-                                                form.setValues({...form.values, skillsTags:[...skillsTagsChosen, inputValue]})
+                                                setSkillsTagsAll([...skillsTagsAll, {id:'new', label:inputValue, value:inputValue}])
+                                                setSkillsTagsChosen([...skillsTagsChosen, {skillId:'new', skill:inputValue}])
+                                                form.setValues({...form.values, skills:[...skillsTagsChosen, {skillId:'new', skill:inputValue}  ]})
                                             }} 
                                             isClearable 
                                             options={setOptions()} 
@@ -529,7 +543,7 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                                             {skillsTagsChosen.map((skill:any, i:any) => (
                                                 <GridItem key={i} >
                                                     <Tag size={'lg'} variant='subtle' colorScheme='cyan'>
-                                                        <TagLabel>{toTitleCase(skill)}</TagLabel>
+                                                        <TagLabel>{toTitleCase(skill.skill)}</TagLabel>
                                                         <TagRightIcon 
                                                             cursor={'pointer'} 
                                                             onClick={() => { 
@@ -542,7 +556,7 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                                                 </GridItem>
                                             ))}
                                         </Grid>
-                                        <ErrorMessage name="skillsTags" />
+                                        <ErrorMessage name="skills" />
                                     </Flex>
                                 )
                             }}
@@ -564,8 +578,8 @@ const JobsFormFour:React.FC<any> = ({onSubmit, formId}) => {
         { label: 'Editor', type: 'preview', value: 'editor'},
         { label: 'View', type: 'preview', value: 'view' },
     ];
-    let formFourSchema = Yup.object({ html: Yup.string().required("Required") })
-    let initialValues = { html: "" }
+    let formFourSchema = Yup.object({ textHTML: Yup.string().required("Required") })
+    let initialValues = { textHTML: "" }
     
     const onChange = (json:any, HTML:string) => {
         dispatch(setHTML(HTML))
@@ -584,10 +598,10 @@ const JobsFormFour:React.FC<any> = ({onSubmit, formId}) => {
             <Formik
                 validationSchema={formFourSchema}
                 initialValues={initialValues}
-                onSubmit={() => {onSubmit({html:HTML})}}
+                onSubmit={() => {onSubmit({textHTML:HTML})}}
             >
                 <Form id={formId} >
-                    <Field name="html" >
+                    <Field name="textHTML" >
                         {({field, form}:any) => {
                             return (<>
                                 <Editor
@@ -598,7 +612,7 @@ const JobsFormFour:React.FC<any> = ({onSubmit, formId}) => {
                                     formFields={form}
                                 /> 
                                 <input style={{display:'none'}} {...field} />  
-                                <ErrorMessage name="html" />  
+                                <ErrorMessage name="textHTML" />  
                             </>)
                         }}
                     </Field>
@@ -612,10 +626,14 @@ const JobsFormFour:React.FC<any> = ({onSubmit, formId}) => {
 const JobsFormFive:React.FC<any> = ({formId, onSubmit}) => {
     const [questions, setQuestions] = useState<number>(1)
 
-    let formFiveSchema = Yup.object({ 
-        questions: Yup.array().min(1, "Required").required("Required") 
+    let formFiveSchema = Yup.object().shape({ 
+        questions: Yup.array().of(
+            Yup.object().shape({
+                text: Yup.string(),
+            })
+        ).min(1, "Required").required("Required") 
     }) 
-    let initialValues = { questions: [""] }
+    let initialValues = { questions: [{text:''}] }
 
     return (
         <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
@@ -628,45 +646,55 @@ const JobsFormFive:React.FC<any> = ({formId, onSubmit}) => {
                 initialValues={initialValues}
                 validationSchema={formFiveSchema}
             >
-                <Form id={formId} style={{display:'flex', flexDirection:'column', flex:1, gap:2,}} >
-                    <Field name="questions" >
-                        {({field, form}:any) => {
-                            return (<>
-                                <OrderedList gap={2} mt={4}>
-                                    {Array(questions).fill({}).map((a, i) =>{
-                                        return(
-                                            <ListItem key={i} mb={2} >
-                                                <Input {...field} value={form.values.questions[i]}
-                                                    onChange={(e) => {
-                                                        form.setValues({
-                                                            ...form.values, 
-                                                            questions: form.values.questions.map((q:string, index:number) => {
-                                                                if(index === i) return e.target.value
-                                                                else return q
-                                                            })
-                                                        })
-                                                    }} 
-                                                    placeholder="Enter a Question" 
-                                                />
-                                            </ListItem>
+                {({values}) =>  (
+                    <Form id={formId} style={{ marginTop:'16px', display:'flex', flexDirection:'column', flex:1, gap:2,}} >
+                        <FieldArray
+                            name="questions"
+                            render={ arrayHelpers => (
+                                <div>
+                                    {values.questions.map((question, index) => {
+                                        return (
+                                        <div key={index} >
+                                            <Field name={`questions[${index}].text`} >
+                                                {({field, form}:any) => {
+                                                    return (<>
+                                                        <Input 
+                                                            {...field} 
+                                                            value={form.values.questions[index].text} 
+                                                            placeholder="Enter a Question" mb={2}
+                                                            onChange={(e) => {
+                                                                form.setValues({
+                                                                    ...form.values, 
+                                                                    questions: form.values.questions.map((q:string, i:number) => {
+                                                                        if(index === i) return {text: e.target.value}
+                                                                        else return q
+                                                                    })
+                                                                })
+                                                            }}   
+                                                        />
+                                                        <ErrorMessage name={`questions[${index}].text`} />  
+                                                    </>
+                                                    )
+                                                }}
+                                            </Field>
+                                        </div>
                                         )
                                     })}
-                                </OrderedList>
-                                <Flex>
-                                    <Button size={'sm'} colorScheme="blue" 
-                                        onClick={() =>{
-                                            setQuestions(questions+1)
-                                            form.setValues({...form.values, questions: [...form.values.questions, ""]})
-                                        }}
-                                    >
-                                        Add New
-                                    </Button>
-                                </Flex>
-                                <ErrorMessage name="questions" />
-                            </>)
-                        }}
-                    </Field>
-                </Form>
+                                    <Flex>
+                                        <Button size={'sm'} colorScheme="blue" 
+                                            onClick={() =>{
+                                                arrayHelpers.push({text:''})
+                                                setQuestions(questions+1)
+                                            }}
+                                        >
+                                            Add New
+                                        </Button>
+                                    </Flex>
+                                </div>
+                            )}
+                        />
+                    </Form>
+                )}
             </Formik>
         </Flex>
     )
