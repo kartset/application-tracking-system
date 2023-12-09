@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker'
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { jobExperienceLevels } from '../../../utils/constants'
+import { STATUS, jobExperienceLevels } from '../../../utils/constants'
+import { api } from '../../../utils/api'
 
 const initialVacanciesList = Array.from({length: 5 }, (v, i) => i).map(i => {
     return {
@@ -27,7 +28,9 @@ export interface initialStateProps {
     initialVacanciesList:any,
     vacanciesList: any,
     vacanicesCategoriesArr: any,
-    vacanciesDepartmentsArr: any
+    vacanciesDepartmentsArr: any,
+    createVacancyStatus: string,
+    vacancy: any,
 
 }
 
@@ -38,8 +41,23 @@ const initialState: initialStateProps = {
   vacanciesList: [],
   vacanicesCategoriesArr: [],
   vacanciesDepartmentsArr: [],
+  createVacancyStatus: STATUS.NOT_STARTED,
+  vacancy: {}
 
 }
+
+export const createVacancyAction = createAsyncThunk(
+    'vacancy/create',
+    async (payload:any, thunkAPI) => {
+        const response = await api.post('/vacancies', payload)
+        const { ok, data } = response
+        if(ok) {
+            return data
+        } else {
+            return response.problem
+        }
+    }
+)
 
 export const vacanciesSlice = createSlice({
   name: 'vacancies',
@@ -61,7 +79,19 @@ export const vacanciesSlice = createSlice({
         }))]
     }
   },
-  extraReducers: (builder) => {}
+  extraReducers: (builder) => {
+    builder.addCase(createVacancyAction.pending, (state, action) => {
+        state.createVacancyStatus = STATUS.PENDING 
+    })
+    builder.addCase(createVacancyAction.fulfilled, (state, action) => {
+        console.log({action})
+        state.vacancy = action.payload
+        state.createVacancyStatus = STATUS.COMPLETED  
+    })
+    builder.addCase(createVacancyAction.rejected, (state, action) => {
+        state.createVacancyStatus = STATUS.FAILED 
+    })
+  }
 })
 
 export const { setHTML, setJSON, initializeVacancies } = vacanciesSlice.actions
