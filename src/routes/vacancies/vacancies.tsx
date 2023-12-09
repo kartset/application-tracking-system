@@ -28,7 +28,7 @@ import { toTitleCase } from "../../utils/helpers"
 import { CustomTabs } from "../../components/Tabs"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../redux"
-import { initializeVacancies, setHTML, setJSON } from "../../redux/reducers/vacancies"
+import { createVacancyAction, initializeVacancies, setHTML, setJSON } from "../../redux/reducers/vacancies"
 import { tableColumns } from "./data"
 import MobileTable from "../../components/MobileTable/table"
 
@@ -109,10 +109,17 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     const formSixId = useId()
     const [currentFormId, setCurrentFormId] = useState(formOneId)
     const [formData, setformData] = useState<any>({})
+    const dispatch = useDispatch<any>();
 
     const onSubmitFinal = (values:any) => {
         console.log('on submit')
         console.log({formData, values})
+        dispatch(createVacancyAction({
+            ...formData, 
+            ...values,
+            orgId:'656dbe0b48cf7d7416f18247',
+            createdBy: '656edbc7da466683ab896266'
+        }))
         //send formData to backend with if make it public is true or false
         onClose()
         toast({
@@ -368,7 +375,7 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
             end: Yup.number().min(1, "Required").required("Required"),
             negotiable: Yup.boolean().default(true)
         }).required("Required"),
-        equityRange: Yup.object({
+        equity: Yup.object({
             start: Yup.number().default(0),
             end: Yup.number().default(0)
         }).required("Required"),
@@ -390,7 +397,7 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
             end: 0,
             negotiable: true
         }, 
-        equityRange: {
+        equity: {
             start:0,
             end: 0
         },
@@ -450,14 +457,14 @@ const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
                     <Field name="salaryRange">
                         {({field}:any) => <SalaryRange name={field.name} />}
                     </Field>
-                    <Field name="equityRange">
+                    <Field name="equity">
                         {({field, form}:any) => {
                             return (
                                 <Flex>
                                     <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1}>
-                                        <Input {...field} value={field.value['start']} onChange={(e) => {form.setValues({...form.values, equityRange: {...form.values.equityRange, start:e.target.value}})}} placeholder="Lower ESOP Limit" type="number" rounded={'lg'} size={'sm'} />
+                                        <Input {...field} value={field.value['start']} onChange={(e) => {form.setValues({...form.values, equity: {...form.values.equity, start:e.target.value}})}} placeholder="Lower ESOP Limit" type="number" rounded={'lg'} size={'sm'} />
                                         <Text>-</Text>
-                                        <Input {...field} value={field.value['end']} onChange={(e) => {form.setValues({...form.values, equityRange: {...form.values.equityRange, end:e.target.value}})}} placeholder="Upper ESOP Limit" type="number" rounded={'lg'} size={'sm'} />    
+                                        <Input {...field} value={field.value['end']} onChange={(e) => {form.setValues({...form.values, equity: {...form.values.equity, end:e.target.value}})}} placeholder="Upper ESOP Limit" type="number" rounded={'lg'} size={'sm'} />    
                                     </Flex>
                                     <ErrorMessage name="equityRange" />
                                 </Flex>
@@ -802,7 +809,7 @@ const VacanciesSearchBar = () => {
                 
                 <Button 
                     rounded={'xl'} pr={4} pl={4} 
-                    colorScheme='teal' size='xs'
+                    colorScheme='teal' size='sm'
                     display={{base:'none', md:'block' }}
                 >
                     Search
