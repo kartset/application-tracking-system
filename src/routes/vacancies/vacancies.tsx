@@ -28,9 +28,14 @@ import { toTitleCase } from "../../utils/helpers"
 import { CustomTabs } from "../../components/Tabs"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../redux"
-import { createVacancyAction, initializeVacancies, setHTML, setJSON } from "../../redux/reducers/vacancies"
-import { tableColumns } from "./data"
+import { 
+    createVacancyAction, initializeVacancies, 
+    resetCreateVacancyStatus, setHTML, setJSON 
+} from "../../redux/reducers/vacancies"
+import { formOne, formSchema, initialValues, tableColumns } from "./data"
 import MobileTable from "../../components/MobileTable/table"
+import { STATUS } from "../../utils/constants"
+import FormElement from "../../components/FormElementBuilder"
 
 const steps = Array(6).fill({ title: '' })
 
@@ -110,6 +115,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     const [currentFormId, setCurrentFormId] = useState(formOneId)
     const [formData, setformData] = useState<any>({})
     const dispatch = useDispatch<any>();
+    const { createVacancyStatus } = useSelector((state:RootState) => state.vacancies)
 
     const onSubmitFinal = (values:any) => {
         console.log('on submit')
@@ -120,16 +126,6 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
             orgId:'656dbe0b48cf7d7416f18247',
             createdBy: '656edbc7da466683ab896266'
         }))
-        //send formData to backend with if make it public is true or false
-        onClose()
-        toast({
-            title:'Success', 
-            status:'success', 
-            position:'top-right', 
-            description:'Application Submitted Successfully', 
-            isClosable:true, 
-            duration:1500
-        })
     }
 
     const onSubmit = (values:any) => {
@@ -164,6 +160,33 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
             setCurrentFormId(formSixId)
         }
     }, [activeStep])
+
+    useEffect(() => {
+        if(createVacancyStatus === STATUS.COMPLETED) {
+            onClose()
+            toast({
+                title:'Success', 
+                status:'success', 
+                position:'top-right', 
+                description:'Application Submitted Successfully', 
+                isClosable:true, 
+                duration:2000
+            })
+            dispatch(resetCreateVacancyStatus({}))
+        } else if(createVacancyStatus === STATUS.FAILED) {
+            onClose()
+            toast({
+                title:'Failed', 
+                status:'error', 
+                position:'top-right', 
+                description:'Application Submission Failed. Check the console for the errors.',
+                isClosable:true, 
+                duration:2000
+            })
+            dispatch(resetCreateVacancyStatus({}))
+        }
+    }, [createVacancyStatus])
+    
     
     
     return (
@@ -194,8 +217,12 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
                         Back
                     </Button>
                     <Button size={'sm'} variant={'unstyled'} mr={3} onClick={onClose}>Close</Button>
-                    <Button form={currentFormId} type="submit" size={'sm'} colorScheme='teal'>
-                        Next
+                    <Button 
+                        isLoading={ createVacancyStatus === STATUS.PENDING } 
+                        form={currentFormId} type="submit" size={'sm'} 
+                        colorScheme='teal'
+                    >
+                        { activeStep === 5 ? 'Submit' :  'Next'}
                     </Button>
                 </ModalFooter>
             </ModalContent>
@@ -204,154 +231,35 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
 }
 
 const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
-
-    let jobPositionOptions = [
-        {text:'Fresher', value:'fresher'},
-        {text:'Associate', value:'associate'},
-        {text:'Senior', value:'senior'},
-        {text:'Executive', value:'executive'},
-        {text:'Advisory', value:'advisory'},
-    ]
-
-    let jobTypeOptions = [
-        {text:'Freelance', value:'freelance'},
-        {text:'Full-Time', value:'fullTime'},
-        {text:'Part-Time', value:'partTime'},
-        {text:'Contractual', value:'contractual'},
-        {text:'Internship', value:'internship'},
-        {text:'Seasonal', value:'seasonal'}
-    ]
-
-    let departmentOptions = [
-        {text: 'Sales', value:'sales'},
-        {text: 'Marketing', value:'marketing'},
-        {text: 'Design', value:'design'},
-        {text: 'Engineering', value:'engineering'}
-
-    ]
-    
-    let formSchema = Yup.object({
-        title: Yup.string().required("Required"),
-        position: Yup.string().oneOf(jobPositionOptions.map((option) => option.value)).required("Required"),
-        type: Yup.string().oneOf(jobTypeOptions.map((option) => option.value)).required("Required"),
-        location: Yup.string().required("Required"),
-        remote: Yup.boolean().default(true),
-        department: Yup.string().oneOf(departmentOptions.map((option) => option.value)).required("Required"),
-    })
-
-    let initialValues = { 
-        title: '', 
-        position: '', 
-        type: '', 
-        location: '', 
-        remote:true,  
-        department: '' 
-    }
-
     return (
         <Flex gap={4} flexDirection={'row'}>
             <Flex gap={4} ml={4} flex={1} mt={4} alignItems={'start'} flexDirection={'column'}>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Title</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job title is a name or designation given to a job or position</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Position</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job position is a function you serve at a company</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Type</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job type defines the accounting behavior for the related job</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Job Location</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A job location usually means where the job is performed</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Department</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >Department is one part of a large organization</Box>
-                </Flex>
+                { formOne.map(field => {
+                    return (
+                        <Flex justifyContent={'center'} flexDirection={'column'} >
+                            <Box fontSize={'20px'} ><b>{field.text}</b></Box>
+                            <Box fontSize={'14px'} color={'#4C5A6D'} >{field.subtext}</Box>
+                        </Flex>
+                    )
+                })}
             </Flex>
             <Formik
                 initialValues={initialValues}
                 validationSchema={formSchema}
                 onSubmit={(values) =>  {onSubmit(values)}}
             >
-                <Form id={formId} style={{flex:1, marginTop:'4px', marginLeft:'4px', display:'flex', flexDirection:'column'}}>
-                    <Field name='title'>
-                        {({field}:any) => {
-                            return (
-                                <Flex flex={1} justifyContent={'start'} alignItems={'center'}>
-                                    <Input autoFocus
-                                        {...field} width={'75%'} placeholder="Enter Job Title"
-                                        rounded={'lg'} size={'sm'} 
-                                    />
-                                    <ErrorMessage name="title" />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                    <Field name='position'>
-                        {({field}:any) => {
-                            return (
-                                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
-                                    <Select {...field} width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                                        {jobPositionOptions.map((option) => {
-                                            return (<option key={option.value} value={option.value}>{option.text}</option>)
-                                        })}
-                                    </Select>
-                                    <ErrorMessage name="position" />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                    <Field name='type' >
-                        {({field}:any) => {
-                            return (
-                                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
-                                    <Select {...field} width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                                        {jobTypeOptions.map((type) => {
-                                            return (<option key={type.value} value={type.value}>{type.text}</option>)
-                                        })}
-                                    </Select>
-                                    <ErrorMessage name="type" />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                    <Field name='location'>
-                        {({field}:any) => {
-                            return (
-                                <Box display={'flex'} flexDirection={'row'} >
-                                    <Flex gap={1} flex={1} flexDirection={'column'}  justifyContent={'start'} >
-                                        <Input {...field} width={'75%'} rounded={'lg'} placeholder="Job Location" size={'sm'} /> {/*make it a google places api with city or region selection */}
-                                        <Field name='remote' >
-                                            {({field}:any) => {
-                                                return (
-                                                    <Checkbox {...field} size={'sm'} defaultChecked>Remote Friendly</Checkbox>
-                                                )
-                                            }}
-                                        </Field>
-                                    </Flex>
-                                    <ErrorMessage name="location" />
-                                </Box>
-                            )
-                        }}
-                    </Field>
-                    <Field name='department' >
-                        {({field}:any) => {
-                            return (
-                                <Flex flex={1} justifyContent={'start'} alignItems={'center'} >
-                                    <Select {...field} width={'75%'} rounded={'lg'} size={'sm'} placeholder='Select option'>
-                                        {departmentOptions.map((department) => {
-                                            return (<option key={department.value} value={department.value}>{department.text}</option>)
-                                        })}
-                                    </Select>
-                                    <ErrorMessage name="department" />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
+                <Form 
+                    id={formId} 
+                    style={{
+                        flex:1, marginTop:'16px', marginLeft:'4px', 
+                        display:'flex', flexDirection:'column'
+                    }}
+                >
+                    { formOne.map((formField, index) => {
+                        return (
+                            <FormElement formField={formField} index={index} />
+                        )
+                    })}
                 </Form>
             </Formik>
         </Flex>
