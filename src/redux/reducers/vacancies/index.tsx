@@ -77,6 +77,13 @@ export const vacanciesSlice = createSlice({
         state.vacanciesDepartmentsArr = [...new Set(state.vacanciesList.map((vac:any) => {
             return vac.jobArea
         }))]
+    },
+    resetCreateVacancyStatus: (state, payload) => {
+        if(payload.payload) {
+            state.createVacancyStatus = payload.payload
+        } else {
+            state.createVacancyStatus = STATUS.NOT_STARTED
+        }
     }
   },
   extraReducers: (builder) => {
@@ -94,6 +101,9 @@ export const vacanciesSlice = createSlice({
   }
 })
 
-export const { setHTML, setJSON, initializeVacancies } = vacanciesSlice.actions
+export const { 
+    setHTML, setJSON, initializeVacancies,
+    resetCreateVacancyStatus
+} = vacanciesSlice.actions
 
 export default vacanciesSlice.reducer
