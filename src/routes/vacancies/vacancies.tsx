@@ -7,7 +7,7 @@ import {
     Select, useDisclosure, Modal, ModalContent, 
     ModalOverlay, ModalHeader, ModalCloseButton, 
     ModalBody, ModalFooter, useSteps, useToast, 
-    Flex, Switch, Text, Checkbox, Tag, TagLabel, 
+    Flex, Checkbox, Tag, TagLabel, 
     TagRightIcon, Stack, useMediaQuery, IconButton, 
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
@@ -20,9 +20,6 @@ import {
     Form, Formik 
 } from "formik"
 import * as Yup from 'yup';
-import SliderWrapper from "../../components/Slider"
-import TimeRange from "../../components/TimeRange"
-import SalaryRange from "../../components/SalaryRange"
 import { ActionMeta } from "react-select"
 import { toTitleCase } from "../../utils/helpers"
 import { CustomTabs } from "../../components/Tabs"
@@ -32,10 +29,13 @@ import {
     createVacancyAction, initializeVacancies, 
     resetCreateVacancyStatus, setHTML, setJSON 
 } from "../../redux/reducers/vacancies"
-import { formOne, formSchema, initialValues, tableColumns } from "./data"
+import { 
+    formOne, formSchema, formTwo, formTwoInitialValues, 
+    formTwoSchema, initialValues, tableColumns 
+} from "./data"
 import MobileTable from "../../components/MobileTable/table"
 import { STATUS } from "../../utils/constants"
-import FormElement from "../../components/FormElementBuilder"
+import FormBuilder from "../../components/FormBuilder"
 
 const steps = Array(6).fill({ title: '' })
 
@@ -186,26 +186,26 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
             dispatch(resetCreateVacancyStatus({}))
         }
     }, [createVacancyStatus])
-    
-    
-    
     return (
         <Modal size={'4xl'} blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay  backdropFilter='blur(10px) hue-rotate(90deg)' />
-            <ModalContent minHeight={'80vh'} >
+            <ModalContent height="80%" >
                 <ModalHeader>Add New Vacancy</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <SteppperWrapper steps={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
-                    { 
-                        activeStep === 0 ? 
-                            <JobPostFormOne onSubmit={onSubmit} formId={formOneId} /> 
-                        : activeStep === 1 ? <JobPostFormTwo onSubmit={onSubmit} formId={formTwoId} /> 
-                        : activeStep === 2 ? <JobsFormThree onSubmit={onSubmit} formId={formThreeId} /> 
-                        : activeStep === 3 ? <JobsFormFour onSubmit={onSubmit} formId={formFourId} /> 
-                        : activeStep === 4 ? <JobsFormFive onSubmit={onSubmit} formId={formFiveId} />
-                        : <JobsFormSix onSubmit={onSubmit} formId={formSixId} />
-                    }
+                    <Flex direction="column" align="stretch" height="100%" >
+                        <SteppperWrapper steps={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
+                        <Box flex={1}>
+                            { 
+                                activeStep === 0 ? <FormBuilder formId={formOneId} onSubmit={onSubmit} elements={formOne} initialValues={initialValues} schema={formSchema} />
+                                : activeStep === 1 ? <FormBuilder formId={formTwoId} onSubmit={onSubmit} elements={formTwo} initialValues={formTwoInitialValues} schema={formTwoSchema}/> 
+                                : activeStep === 2 ? <JobsFormThree onSubmit={onSubmit} formId={formThreeId} /> 
+                                : activeStep === 3 ? <JobsFormFour onSubmit={onSubmit} formId={formFourId} /> 
+                                : activeStep === 4 ? <JobsFormFive onSubmit={onSubmit} formId={formFiveId} />
+                                : <JobsFormSix onSubmit={onSubmit} formId={formSixId} />
+                            }
+                        </Box>
+                    </Flex>
                 </ModalBody>
                 <ModalFooter gap={3}>
                     <Button variant={'outline'} size={'sm'} colorScheme='blue'
@@ -228,173 +228,6 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
             </ModalContent>
         </Modal>
     )
-}
-
-const JobPostFormOne:React.FC<any> = ({onSubmit, formId}) => {
-    return (
-        <Flex gap={4} flexDirection={'row'}>
-            <Flex gap={4} ml={4} flex={1} mt={4} alignItems={'start'} flexDirection={'column'}>
-                { formOne.map(field => {
-                    return (
-                        <Flex justifyContent={'center'} flexDirection={'column'} >
-                            <Box fontSize={'20px'} ><b>{field.text}</b></Box>
-                            <Box fontSize={'14px'} color={'#4C5A6D'} >{field.subtext}</Box>
-                        </Flex>
-                    )
-                })}
-            </Flex>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={formSchema}
-                onSubmit={(values) =>  {onSubmit(values)}}
-            >
-                <Form 
-                    id={formId} 
-                    style={{
-                        flex:1, marginTop:'16px', marginLeft:'4px', 
-                        display:'flex', flexDirection:'column'
-                    }}
-                >
-                    { formOne.map((formField, index) => {
-                        return (
-                            <FormElement formField={formField} index={index} />
-                        )
-                    })}
-                </Form>
-            </Formik>
-        </Flex>
-    )
-}
-
-const JobPostFormTwo:React.FC<any> = ({onSubmit, formId}) => {
-    
-    let formTwoSchema = Yup.object({
-        numVacancies: Yup.number().min(1, "Vacancies Should be more than 1").required("Required"),
-        onlyWomenHiring: Yup.boolean().default(false),
-        workHours: Yup.object({
-            startTime:Yup.number().default(undefined).required("Required"), 
-            startTimeMeridiem:Yup.string().oneOf(['ante', 'post']).default(undefined).required("Required"),
-            endTime:Yup.number().default(undefined).required("Required"),
-            endTimeMeridiem: Yup.string().oneOf(['ante', 'post']).default(undefined).required("Required"),
-        }).required("Required"),
-        salaryRange: Yup.object({
-            type: Yup.string().oneOf(['hourly', 'weekly', 'monthly', 'fullTime']).required("Required"),
-            start: Yup.number().min(1, "Required").required("Required"),
-            end: Yup.number().min(1, "Required").required("Required"),
-            negotiable: Yup.boolean().default(true)
-        }).required("Required"),
-        equity: Yup.object({
-            start: Yup.number().default(0),
-            end: Yup.number().default(0)
-        }).required("Required"),
-        immediateJoining: Yup.boolean().default(true)
-    })
-
-    let initialValues = { 
-        numVacancies: 0, 
-        onlyWomenHiring: false, 
-        workHours: {
-            startTime:undefined, 
-            startTimeMeridiem:undefined,
-            endTime:undefined,
-            endTimeMeridiem: undefined,
-        }, 
-        salaryRange: {
-            type: undefined,
-            start: 0,
-            end: 0,
-            negotiable: true
-        }, 
-        equity: {
-            start:0,
-            end: 0
-        },
-        immediateJoining: false
-    }
-    
-    return (<>
-        <Flex gap={4} flexDirection={'row'}>
-            <Flex gap={4} ml={4} alignItems={'start'} flex={1} mt={4} flexDirection={'column'}>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Number of Vacancies</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >Total Number People to Hire for this post</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Work Hours</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >The amount of time employee would spend at work during a day</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Salary Range</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >A salary range is the range of pay offered for performing a job.</Box>
-                </Flex>
-                <Flex justifyContent={'center'} flexDirection={'column'} >
-                    <Box fontSize={'20px'} ><b>Equity</b></Box>
-                    <Box fontSize={'14px'} color={'#4C5A6D'} >An ESOP grants company stock to employees</Box>
-                </Flex>
-            </Flex>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={formTwoSchema}
-                onSubmit={(values) =>  {onSubmit(values)}}
-            >
-                <Form id={formId} style={{gap:'16px', marginTop:'5px', display:'flex', flex:1, flexDirection:'column' }}>
-                    <Field name="numVacancies">
-                        {({field}:any) => {
-                            return(
-                                <Flex gap={2} flexDirection={'column'} justifyContent={'center'} flex={1}>
-                                    <SliderWrapper name={field.name} type="number" />
-                                    <Field name="onlyWomenHiring" >
-                                        {({field}:any) => {
-                                            return (<Checkbox {...field} size={'sm'} >Hiring Only Women </Checkbox>)
-                                        }}
-                                    </Field>
-                                    <ErrorMessage name="numVacancies" />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                    <Field name="workHours">
-                        {({field, form}:any) => {
-                            return (
-                                <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1} >
-                                    <TimeRange name={field.name} />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                    <Field name="salaryRange">
-                        {({field}:any) => <SalaryRange name={field.name} />}
-                    </Field>
-                    <Field name="equity">
-                        {({field, form}:any) => {
-                            return (
-                                <Flex>
-                                    <Flex gap={2} justifyContent={'center'} alignItems={'center'} flex={1}>
-                                        <Input {...field} value={field.value['start']} onChange={(e) => {form.setValues({...form.values, equity: {...form.values.equity, start:e.target.value}})}} placeholder="Lower ESOP Limit" type="number" rounded={'lg'} size={'sm'} />
-                                        <Text>-</Text>
-                                        <Input {...field} value={field.value['end']} onChange={(e) => {form.setValues({...form.values, equity: {...form.values.equity, end:e.target.value}})}} placeholder="Upper ESOP Limit" type="number" rounded={'lg'} size={'sm'} />    
-                                    </Flex>
-                                    <ErrorMessage name="equityRange" />
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                    <Field name="immediateJoining">
-                        {({field, form}:any) => {
-                            return (
-                                <Flex mt={4} gap={4} justifyContent={'end'} alignItems={'end'}>
-                                    <Box fontSize={'20px'} ><b>Immediate Joining</b></Box>
-                                    <Flex justifyContent={'center'} alignItems={'center'}>
-                                        <Switch {...field} id='immediate-joining' />
-                                    </Flex>
-                                </Flex>
-                            )
-                        }}
-                    </Field>
-                </Form>
-            </Formik>
-        </Flex>
-    </>)
 }
 
 const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
