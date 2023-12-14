@@ -23,7 +23,6 @@ const SalaryRange:React.FC<any> = (props) => {
                             return (<option key={option.value} value={option.value}>{option.text}</option>)
                         })}
                     </Select>
-                    <Text>{(meta as any).error && (meta as any).error['type'] && (meta as any).error['type']}</Text>
                 </Flex>
 
                 <Flex flex={1} gap={2} flexDirection={'column'} >
@@ -31,7 +30,6 @@ const SalaryRange:React.FC<any> = (props) => {
                         <InputLeftAddon rounded={'lg'} children='$' />
                         <Input {...field} value={field.value['start']} onChange={(e) => {setValue({...field.value, start:e.target.value})}} type='number' rounded={'lg'} placeholder='Rate' />
                     </InputGroup>
-                    <Text>{(meta as any).error && (meta as any).error['start'] && (meta as any).error['start']}</Text>
                 </Flex>
                 
                 <Text>-</Text>
@@ -41,7 +39,6 @@ const SalaryRange:React.FC<any> = (props) => {
                         <InputLeftAddon rounded={'lg'} children='$' />
                         <Input {...field} value={field.value['end']} onChange={(e) => {setValue({...field.value, end:e.target.value})}} type='number' rounded={'lg'} placeholder='Rate' />
                     </InputGroup>
-                    <Text>{(meta as any).error && (meta as any).error['end'] && (meta as any).error['end']}</Text>
                 </Flex>            
             </Flex>
             <Checkbox {...field} value={field.value['negotiable']} onChange={(e) => {setValue({...field.value, negotiable:e.target.value})}} defaultChecked>Negotiable</Checkbox>
