@@ -14,7 +14,8 @@ import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
 import { useEffect, useId, useState } from "react"
 import Editor from "../../components/Editor/Editor"
-import CreatableSelect from 'react-select/creatable';
+import AsyncCreatableSelect from 'react-select/async-creatable';
+
 import { 
     ErrorMessage, Field, FieldArray, 
     Form, Formik 
@@ -36,6 +37,7 @@ import {
 import MobileTable from "../../components/MobileTable/table"
 import { STATUS } from "../../utils/constants"
 import FormBuilder from "../../components/FormBuilder"
+import { getSkillsAction } from "../../redux/reducers/skills"
 
 const steps = Array(6).fill({ title: '' })
 
@@ -231,9 +233,9 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
 }
 
 const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
-
     const [skillsTagsAll, setSkillsTagsAll] = useState<any>([{id:'1', label:"Communication", value:"communication"}, {id:'2', label:"Leadership", value:"leadership"}])
     const [skillsTagsChosen, setSkillsTagsChosen] = useState<any>([])
+    const { skills, getSkillsStatus } = useSelector((state:RootState) => state.skills)
     let formThreeSchema = Yup.object().shape({
         skills: Yup.array().of( 
             Yup.object().shape({
@@ -247,11 +249,21 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
         skill: ''
     }
     ] }
+    const dispatch = useDispatch<any>()
 
-    const setOptions = () => {
-        let optionValues = skillsTagsAll.map((x:any) => x.value).filter((x:string) => !skillsTagsChosen.includes(x))
-        return skillsTagsAll.filter((x:any) => optionValues.includes(x.value))
-    }
+    useEffect(() => {
+      dispatch(getSkillsAction({}))
+    }, [])
+
+    const loadOptions = async (inputValue:any, callback:any) => {
+        dispatch(getSkillsAction({skill:inputValue}));
+        const options = skills.map((skill:any) => ({
+        value: skill.skill,
+        label: toTitleCase(skill.skill),
+        }));
+        callback(options);
+    };
+    
    
     return (
         <Flex mt={4} justifyContent={'center'} flexDirection={'row'}>
@@ -272,7 +284,8 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                             {({field, form}:any) => {
                                 return (
                                     <Flex gap={2} flex={1} flexDirection={'column'} >
-                                        <CreatableSelect 
+                                        <AsyncCreatableSelect
+                                            key={field.name}
                                             {...field} 
                                             value={''}
                                             onChange={(newValue:any, actionMeta:ActionMeta<string>) => {
@@ -280,12 +293,14 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                                                 form.setValues({...form.values, skills:[...skillsTagsChosen,{skillId:newValue.id, skill:newValue.value}]})
                                             }} 
                                             onCreateOption={(inputValue:string) => {
-                                                setSkillsTagsAll([...skillsTagsAll, {id:'new', label:inputValue, value:inputValue}])
                                                 setSkillsTagsChosen([...skillsTagsChosen, {skillId:'new', skill:inputValue}])
                                                 form.setValues({...form.values, skills:[...skillsTagsChosen, {skillId:'new', skill:inputValue}  ]})
                                             }} 
                                             isClearable 
-                                            options={setOptions()} 
+                                            isLoading={getSkillsStatus === STATUS.PENDING}
+                                            defaultOptions={skills.map((skill:any) => {return {...skill, label:toTitleCase(skill.skill), value:skill.skill}})}
+                                            loadOptions={loadOptions}
+                                            options={skills.map((skill:any) => {return {...skill, label:toTitleCase(skill.skill), value:skill.skill}})}
                                         />
                                         <Grid templateColumns='repeat(4, 1fr)' gap={2}>
                                             {skillsTagsChosen.map((skill:any, i:any) => (
