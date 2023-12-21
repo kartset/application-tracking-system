@@ -233,7 +233,6 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
 }
 
 const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
-    const [skillsTagsAll, setSkillsTagsAll] = useState<any>([{id:'1', label:"Communication", value:"communication"}, {id:'2', label:"Leadership", value:"leadership"}])
     const [skillsTagsChosen, setSkillsTagsChosen] = useState<any>([])
     const { skills, getSkillsStatus } = useSelector((state:RootState) => state.skills)
     let formThreeSchema = Yup.object().shape({

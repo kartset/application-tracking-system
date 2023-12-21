@@ -21,7 +21,7 @@ export const getSkillsAction = createAsyncThunk(
         if(ok) {
             return data
         } else {
-            return response.problem
+            return thunkAPI.rejectWithValue({response, data})
         }
     }
 )
