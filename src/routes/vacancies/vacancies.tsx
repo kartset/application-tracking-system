@@ -8,7 +8,7 @@ import {
     ModalOverlay, ModalHeader, ModalCloseButton, 
     ModalBody, ModalFooter, useSteps, useToast, 
     Flex, Checkbox, Tag, TagLabel, 
-    TagRightIcon, Stack, useMediaQuery, IconButton, 
+    TagRightIcon, Stack, useMediaQuery, IconButton, Tooltip, TagCloseButton, 
 } from "@chakra-ui/react"
 import TableWrapper from "../../components/Table"
 import SteppperWrapper from "../../components/Stepper"
@@ -38,6 +38,7 @@ import MobileTable from "../../components/MobileTable/table"
 import { STATUS } from "../../utils/constants"
 import FormBuilder from "../../components/FormBuilder"
 import { getSkillsAction } from "../../redux/reducers/skills"
+import { api } from "../../utils/api"
 
 const steps = Array(6).fill({ title: '' })
 
@@ -191,7 +192,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
     return (
         <Modal size={'4xl'} blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay  backdropFilter='blur(10px) hue-rotate(90deg)' />
-            <ModalContent height="80%" >
+            <ModalContent marginTop={'20px'} height="90%" >
                 <ModalHeader>Add New Vacancy</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -235,6 +236,7 @@ const ModalWrapper:React.FC<any> = ({isOpen, onClose, activeStep, setActiveStep}
 const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
     const [skillsTagsChosen, setSkillsTagsChosen] = useState<any>([])
     const { skills, getSkillsStatus } = useSelector((state:RootState) => state.skills)
+    const [options, setOptions] = useState<any>([])
     let formThreeSchema = Yup.object().shape({
         skills: Yup.array().of( 
             Yup.object().shape({
@@ -253,14 +255,25 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
     useEffect(() => {
       dispatch(getSkillsAction({}))
     }, [])
+    
 
     const loadOptions = async (inputValue:any, callback:any) => {
-        dispatch(getSkillsAction({skill:inputValue}));
-        const options = skills.map((skill:any) => ({
-        value: skill.skill,
-        label: toTitleCase(skill.skill),
-        }));
-        callback(options);
+        const response = await api.get('/skills', {skill:inputValue})
+        const { ok, data } = response
+        if(ok) {
+            let options = (data as []).map((skill:any) => ({
+                ...skill,
+                value: skill.skill,
+                label: toTitleCase(skill.skill),
+            }))
+            console.log({skillsTagsChosen, options}) 
+            options = options.filter(x => !skillsTagsChosen.map((v:any) => v.skillId).includes(x._id));
+            setOptions(options)
+            callback(options)
+        } else {
+            callback([])
+        }
+        
     };
     
    
@@ -272,7 +285,7 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                     <Box fontSize={'14px'} color={'#4C5A6D'} >Tag all the skills required for the job</Box>
                 </Flex>
             </Flex>
-            <Flex  flex={1} >
+            <Flex flexDirection={'column'} flex={1} >
                 <Formik
                     initialValues={initialValues}
                     validationSchema={formThreeSchema}
@@ -287,34 +300,47 @@ const JobsFormThree:React.FC<any> = ({onSubmit, formId}) => {
                                             key={field.name}
                                             {...field} 
                                             value={''}
-                                            onChange={(newValue:any, actionMeta:ActionMeta<string>) => {
-                                                setSkillsTagsChosen([...skillsTagsChosen, {skillId:newValue.id, skill:newValue.value}])
-                                                form.setValues({...form.values, skills:[...skillsTagsChosen,{skillId:newValue.id, skill:newValue.value}]})
+                                            onChange={(value:any, actionMeta:ActionMeta<string>) => {
+                                                if(!skillsTagsChosen.map((s:any) => s._id).includes(value._id)) {
+                                                    setSkillsTagsChosen([...skillsTagsChosen, {skillId:value._id, skill:value.value}])
+                                                    form.setValues({...form.values, skills:[...skillsTagsChosen,{skillId:value._id, skill:value.value}]})
+                                                }
                                             }} 
                                             onCreateOption={(inputValue:string) => {
-                                                setSkillsTagsChosen([...skillsTagsChosen, {skillId:'new', skill:inputValue}])
-                                                form.setValues({...form.values, skills:[...skillsTagsChosen, {skillId:'new', skill:inputValue}  ]})
+                                                if( skillsTagsChosen.map((skill:any) => skill.skill.split(' ').join('') !== inputValue.split(' ').join('')) ) {
+                                                    setSkillsTagsChosen([...skillsTagsChosen, {skillId:'new', skill:inputValue}])
+                                                    form.setValues({...form.values, skills:[...skillsTagsChosen, {skillId:'new', skill:inputValue}  ]})
+                                                }
                                             }} 
                                             isClearable 
                                             isLoading={getSkillsStatus === STATUS.PENDING}
-                                            defaultOptions={skills.map((skill:any) => {return {...skill, label:toTitleCase(skill.skill), value:skill.skill}})}
+                                            defaultOptions={skills.filter((x:any) => !skillsTagsChosen.map((v:any) => v.skillId).includes(x._id)).map((skill:any) => {return {...skill, label:toTitleCase(skill.skill), value:skill.skill}})}
                                             loadOptions={loadOptions}
-                                            options={skills.map((skill:any) => {return {...skill, label:toTitleCase(skill.skill), value:skill.skill}})}
+                                            options={options}
                                         />
-                                        <Grid templateColumns='repeat(4, 1fr)' gap={2}>
+                                        <Grid templateColumns='repeat(4, 100px)' gap={2}>
                                             {skillsTagsChosen.map((skill:any, i:any) => (
                                                 <GridItem key={i} >
-                                                    <Tag size={'lg'} variant='subtle' colorScheme='cyan'>
-                                                        <TagLabel>{toTitleCase(skill.skill)}</TagLabel>
-                                                        <TagRightIcon 
-                                                            cursor={'pointer'} 
-                                                            onClick={() => { 
-                                                                setSkillsTagsChosen(skillsTagsChosen.filter((s:string) => s !== skill))
-                                                            }} 
-                                                            boxSize='12px' 
-                                                            as={SmallCloseIcon} 
-                                                        />
-                                                    </Tag>
+                                                    <Tooltip label={toTitleCase(skill.skill)} aria-label='A tooltip'>
+                                                        <Tag size={'lg'} variant='subtle' colorScheme='cyan'>
+                                                            <TagLabel>{toTitleCase(skill.skill).split(' ')[0]}</TagLabel>
+                                                            <TagCloseButton 
+                                                                cursor={'pointer'} 
+                                                                onClick={() => { 
+                                                                    setSkillsTagsChosen(skillsTagsChosen.filter((s:string) => s !== skill))
+                                                                }} 
+                                                                boxSize='12px'  
+                                                            />
+                                                            {/* <TagRightIcon 
+                                                                cursor={'pointer'} 
+                                                                onClick={() => { 
+                                                                    setSkillsTagsChosen(skillsTagsChosen.filter((s:string) => s !== skill))
+                                                                }} 
+                                                                boxSize='12px' 
+                                                                as={SmallCloseIcon} 
+                                                            /> */}
+                                                        </Tag>
+                                                    </Tooltip>
                                                 </GridItem>
                                             ))}
                                         </Grid>
