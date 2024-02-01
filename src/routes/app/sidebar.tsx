@@ -16,7 +16,7 @@ const Sidebar = () => {
     const [hoveredPath, setHoveredPath] = useState(pathname);
     const [ isSmallerThan1024 ] = useMediaQuery('(max-width: 1024px)')
     return (
-        <Grid height={'100vh'} width={'100%'} templateRows='repeat(17, 1fr)' >
+        <Grid height={'95vh'} width={'100%'} templateRows='repeat(17, 1fr)' >
             <GridItem 
                 style={{display:'flex', alignItems:'center', justifyContent:'center'}} 
                 className={"brand text-scrolled"} rowSpan={2} 

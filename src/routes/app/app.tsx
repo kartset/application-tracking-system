@@ -32,7 +32,7 @@ const Layout = () => {
                 <GridItem width={'16vw'}  display={{base:'none', md:'block'}} colSpan={2}>
                     <Sidebar />
                 </GridItem> 
-                <GridItem width={{base:'100vw', md:'84vw'}} rounded={'2xl'} colSpan={{base:12, md:10}}>
+                <GridItem width={{base:'100vw', md:'83vw'}} rounded={'2xl'} colSpan={{base:12, md:10}}>
                     <Grid 
                         rounded={{base:'none', md:'2xl'}} 
                         height={{base:'100vh', md:'95vh'}} 
