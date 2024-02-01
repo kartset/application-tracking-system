@@ -6,9 +6,9 @@ const FormBuilder:React.FC<any> = ({ elements, initialValues, schema, formId, on
     return (
         <Flex gap={4} height={'100%'} width={'100%'} flexDirection={'row'}>
             <Flex gap={4} ml={4} flex={1} mt={4} justifyContent={'space-around'} alignItems={'start'} flexDirection={'column'}>
-                { elements.map((field:any) => {
+                { elements.map((field:any, i:any) => {
                     return (
-                        <Flex key={field.text} justifyContent={'center'} flexDirection={'column'} >
+                        <Flex key={field.text + i} justifyContent={'center'} flexDirection={'column'} >
                             <Box fontSize={'20px'} ><b>{field.text}</b></Box>
                             <Box fontSize={'14px'} color={'#4C5A6D'} >{field.subtext}</Box>
                         </Flex>
